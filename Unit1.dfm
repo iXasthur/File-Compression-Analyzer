@@ -32,8 +32,8 @@ object Form1: TForm1
     Font.Style = []
     ParentColor = False
     ParentFont = False
-    ExplicitLeft = 595
-    ExplicitTop = 569
+    OnClick = Label1Click
+    ExplicitLeft = 640
     ExplicitWidth = 142
   end
   object GridPanelMain: TGridPanel
@@ -162,8 +162,6 @@ object Form1: TForm1
         Value = 9.999999999999995000
       end>
     TabOrder = 0
-    ExplicitWidth = 737
-    ExplicitHeight = 569
     object OpenButton: TSpeedButton
       Left = 79
       Top = 54
@@ -194,22 +192,15 @@ object Form1: TForm1
       ReadOnly = True
       ScrollBars = ssVertical
       TabOrder = 0
-      ExplicitLeft = 293
-      ExplicitTop = 57
-      ExplicitWidth = 292
-      ExplicitHeight = 112
     end
     object OpenLabel: TLabel
       Left = 79
       Top = 107
-      Width = 116
+      Width = 91
       Height = 53
       Align = alLeft
       Alignment = taCenter
       Caption = 'OpenLabel'
-      ExplicitLeft = 74
-      ExplicitTop = 113
-      ExplicitWidth = 91
       ExplicitHeight = 26
     end
     object LabelFilePreview: TLabel
@@ -225,20 +216,16 @@ object Form1: TForm1
       Font.Name = 'Calibri'
       Font.Style = []
       ParentFont = False
-      ExplicitLeft = 293
-      ExplicitTop = 40
       ExplicitWidth = 94
     end
     object LabelFilePath: TLabel
       Left = 79
       Top = 160
       Width = 542
-      Height = 40
+      Height = 26
       Align = alTop
       Caption = 'LabelFilePath'
-      ExplicitLeft = 59
-      ExplicitTop = 130
-      ExplicitWidth = 402
+      ExplicitWidth = 114
     end
     object CompressionButton: TSpeedButton
       AlignWithMargins = True
@@ -265,10 +252,6 @@ object Form1: TForm1
       Align = alClient
       Caption = 'Compression1'
       TabOrder = 1
-      ExplicitLeft = 74
-      ExplicitTop = 281
-      ExplicitWidth = 146
-      ExplicitHeight = 56
     end
     object CheckBox2: TCheckBox
       Left = 79
@@ -278,10 +261,6 @@ object Form1: TForm1
       Align = alClient
       Caption = 'Compression2'
       TabOrder = 2
-      ExplicitLeft = 328
-      ExplicitTop = 312
-      ExplicitWidth = 97
-      ExplicitHeight = 17
     end
     object CheckBox3: TCheckBox
       AlignWithMargins = True
@@ -293,9 +272,6 @@ object Form1: TForm1
       Align = alLeft
       Caption = 'Analyse'
       TabOrder = 3
-      ExplicitLeft = 303
-      ExplicitTop = 284
-      ExplicitHeight = 53
     end
   end
   object OpenDialog1: TOpenDialog

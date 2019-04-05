@@ -23,6 +23,7 @@ type
     CheckBox3: TCheckBox;
     procedure OpenButtonClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
+    procedure Label1Click(Sender: TObject);
   private
     { Private declarations }
   public
@@ -70,7 +71,21 @@ begin
     Self.CheckBox3.Enabled:=True;
 
     Self.CompressionButton.Enabled:=True;
+
   end;
+end;
+
+
+procedure TForm1.Label1Click(Sender: TObject);
+begin
+  if Self.Label1.Caption='(c)Mikhail Kavaleuski ' then
+  begin
+    Self.Label1.Caption:='Ты напоролся на БАН! '
+  end else
+      begin
+        Self.Label1.Caption:='(c)Mikhail Kavaleuski '
+      end;
+
 end;
 
 
