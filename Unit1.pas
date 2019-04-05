@@ -10,12 +10,19 @@ uses
 type
   TForm1 = class(TForm)
     Label1: TLabel;
-    GridPanel1: TGridPanel;
+    GridPanelMain: TGridPanel;
     OpenDialog1: TOpenDialog;
-    ImageList1: TImageList;
-    SpeedButton1: TSpeedButton;
-    Label2: TLabel;
-    procedure Label1Click(Sender: TObject);
+    OpenButton: TSpeedButton;
+    Memo1: TMemo;
+    OpenLabel: TLabel;
+    LabelFilePreview: TLabel;
+    LabelFilePath: TLabel;
+    CompressionButton: TSpeedButton;
+    CheckBox1: TCheckBox;
+    CheckBox2: TCheckBox;
+    CheckBox3: TCheckBox;
+    procedure OpenButtonClick(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
   private
     { Private declarations }
   public
@@ -29,15 +36,43 @@ implementation
 
 {$R *.dfm}
 
-procedure TForm1.Label1Click(Sender: TObject);
+procedure TForm1.FormCreate(Sender: TObject);
 begin
-  if Label1.Caption = '(c)Mikhail Kavaleuski ' then
-  begin
-    Label1.Caption := '¡¿Õ! '
-  end else
-      begin
-        Label1.Caption := '(c)Mikhail Kavaleuski '
-      end;
+  Self.GridPanelMain.Color:=clWebSeashell;
+  Self.OpenLabel.Caption:='File isn''t open';
+  openDialog1.InitialDir := GetCurrentDir;
+  Self.Memo1.Color:=clWebLavender;
+  Self.Memo1.Text:='';
+  Self.LabelFilePath.Hide;
+  Self.LabelFilePreview.Caption:='File preview';
+
+  Self.CheckBox1.Enabled:=False;
+  Self.CheckBox2.Enabled:=False;
+  Self.CheckBox3.Enabled:=False;
+
+  Self.CompressionButton.Enabled:=False;
 end;
+
+procedure TForm1.OpenButtonClick(Sender: TObject);
+begin
+  if OpenDialog1.Execute() then
+  begin
+    Self.Memo1.Lines.LoadFromFile(OpenDialog1.FileName);
+
+    Self.OpenButton.Caption:='Open another file';
+    Self.OpenLabel.Hide;
+
+    Self.LabelFilePath.Show;
+    Self.LabelFilePath.Caption:='File path: ' + OpenDialog1.FileName;
+
+    Self.CheckBox1.Enabled:=True;
+    Self.CheckBox2.Enabled:=True;
+    Self.CheckBox3.Enabled:=True;
+
+    Self.CompressionButton.Enabled:=True;
+  end;
+end;
+
+
 
 end.
