@@ -68,13 +68,38 @@ end;
 
 function RLECompressString(str: String):String;
 var
-  i: Integer;
+  i,s: Integer;
   buffChar: Char;
+  buffStr: String;
 begin
+  buffStr:='';
+  if length(str)>1 then
+  begin
+    while length(str)>=1 do
+    begin
+      s:=0;
+      buffChar:=str[1];
+
+      while (length(str)>=1) and (str[1]=buffChar) and (s<>9) do
+      begin
+        s:=s+1;
+        delete(str,1,1);
+      end;
+
+      buffStr:=buffStr+IntToStr(s);
+      buffStr:=buffStr+buffChar;
+    end;
+  end else
+        if length(str)=1 then
+        begin
+          buffChar:=str[1];
+          buffStr:='1';
+          buffStr:=buffStr+buffChar;
+        end;
 
 
-
-  RLECompressString:=IntToStr(length(str));
+//  RLECompressString:=IntToStr(length(str));
+  RLECompressString:=buffStr;
 end;
 
 
