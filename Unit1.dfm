@@ -239,6 +239,7 @@ object Form1: TForm1
       Margins.Bottom = 10
       Align = alClient
       Caption = 'Compress'
+      OnClick = CompressionButtonClick
       ExplicitLeft = 360
       ExplicitTop = 272
       ExplicitWidth = 23
@@ -250,7 +251,7 @@ object Form1: TForm1
       Width = 233
       Height = 53
       Align = alClient
-      Caption = 'Compression1'
+      Caption = 'RLE'
       TabOrder = 1
     end
     object CheckBox2: TCheckBox
@@ -259,7 +260,7 @@ object Form1: TForm1
       Width = 233
       Height = 53
       Align = alClient
-      Caption = 'Compression2'
+      Caption = 'Huffman'
       TabOrder = 2
     end
     object CheckBox3: TCheckBox
@@ -275,7 +276,7 @@ object Form1: TForm1
     end
   end
   object OpenDialog1: TOpenDialog
-    Filter = 'Text|*.txt|AnyFile|*'
+    Filter = 'Text|*.txt|Any File|*'
     Left = 584
     Top = 440
   end

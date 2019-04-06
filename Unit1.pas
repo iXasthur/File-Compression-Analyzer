@@ -8,6 +8,8 @@ uses
   System.ImageList, Vcl.ImgList, Vcl.Buttons;
 
 type
+  TString = TStrings;
+  TFile = TextFile;
   TForm1 = class(TForm)
     Label1: TLabel;
     GridPanelMain: TGridPanel;
@@ -24,6 +26,7 @@ type
     procedure OpenButtonClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure Label1Click(Sender: TObject);
+    procedure CompressionButtonClick(Sender: TObject);
   private
     { Private declarations }
   public
@@ -36,6 +39,33 @@ var
 implementation
 
 {$R *.dfm}
+
+
+procedure TForm1.CompressionButtonClick(Sender: TObject);
+var
+  txt: TString;
+  F: TFile;
+  i:integer;
+begin
+//  AssignFile(F,OpenDialog1.FileName);
+//  Reset(F);
+//  while not eof(F) do
+//  begin
+//    Readln(F,buffStr);
+//    str:=str+buffStr;
+//  end;
+//  CloseFile(F);
+  txt:=Self.Memo1.Lines;
+
+  AllocConsole;
+  writeln('Uncompressed text:');
+  for i := 0 to Self.Memo1.Lines.Count-1 do
+  begin
+    writeln(txt[i]);
+  end;
+  writeln;
+  //FreeConsole;
+end;
 
 procedure TForm1.FormCreate(Sender: TObject);
 begin
