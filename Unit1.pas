@@ -68,7 +68,7 @@ end;
 
 function RLECompressString(str: String):String;
 var
-  i,s: Integer;
+  s: Integer;
   buffChar: Char;
   buffStr: String;
 begin
@@ -110,7 +110,6 @@ var
 begin
   AssignFile(F,newPath);
   Rewrite(F);
-
   if strs.Count>1 then
   begin
     for i:=0 to strs.Count-2 do
@@ -132,7 +131,6 @@ end;
 procedure CompressionStart(strs:TText;z:integer);
 var
   i,p: Integer;
-  F:TFile;
   newPath,newName: String;
 begin
   newPath:=ExtractFilePath(Form1.OpenDialog1.FileName);
@@ -209,19 +207,137 @@ begin
   begin
     CompressionStart(txt,1);
   end;
+  txt.Free;
   //FreeConsole;
 end;
 
 
 
-
-
-
-procedure decompressRLE(path:String);
+function decompressRLEString(str:String):String;
 var
-  i: Integer;
+  s,i: Integer;
+  buffChar: Char;
+  buffCount: Integer;
+  buffStr: String;
 begin
+  buffStr:='';
+  if length(str)>2 then
+  begin
+    while length(str)>=2 do
+    begin
+      buffCount:=StrToInt(str[1]);
+      buffChar:=str[2];
+      for i:=1 to buffCount do
+      begin
+        buffStr:=buffStr+buffChar;
+      end;
+      delete(str,1,2);
+    end;
+  end else
+        if length(str)=2 then
+        begin
+          buffCount:=StrToInt(str[1]);
+          buffChar:=str[2];
+          for i:=1 to buffCount do
+          begin
+            buffStr:=buffStr+buffChar;
+          end;
 
+        end;
+
+
+//  decompressRLEString:=IntToStr(length(str));
+  decompressRLEString:=buffStr;
+end;
+
+
+procedure decompressRLE(txt:TText;newPath:String);
+var
+  F:TFile;
+  i:integer;
+begin
+  AssignFile(F,newPath);
+  Rewrite(F);
+
+  if txt.Count>1 then
+  begin
+    for i:=0 to txt.Count-2 do
+    begin
+      writeln(F,decompressRLEString(txt[i]));
+    end;
+    write(F,decompressRLEString(txt[i]));
+  end else
+        if txt.Count=1 then
+        begin
+        write(F,decompressRLEString(txt[0]));
+        end;
+
+
+  CloseFile(F);
+end;
+
+
+procedure StartDecompression(path:String;z:integer);
+var
+  i,p: Integer;
+  txt:TText;
+  newPath,newName: String;
+begin
+  AllocConsole;
+
+  Form1.Memo1.Clear;
+  txt:= TStringList.Create;
+  txt.LoadFromFile(path);
+
+  newPath:=ExtractFilePath(path);
+  newName:=ExtractFileName(path);
+  p:=pos(ExtractFileExt(path),newName);
+  if p<>0 then
+  begin
+    Delete(newName,p,length(ExtractFileExt(path)));
+  end;
+  newName:='D_' + newName;
+  newName:=newName+'.txt';
+  newPath:=newPath+newName;
+
+  case z of
+    1:
+      begin
+        decompressRLE(txt,newPath);
+        write('RLE ');
+      end;
+    2:
+      begin
+
+      end;
+    3:
+      begin
+
+      end;
+  end;
+
+  txt.clear;
+  txt.LoadFromFile(newPath);
+  Form1.Memo1.Lines:=txt;
+
+  writeln('Decompression Result:');
+  for i := 0 to txt.Count-1 do
+  begin
+    writeln(txt[i]);
+  end;
+
+
+  writeln;
+  printFileInfo(newPath);
+  writeln;
+  writeln;
+
+  if Form1.CheckBoxExport.Checked=false then
+  begin
+    DeleteFile(newPath);
+  end;
+
+  txt.Free;
 end;
 
 
@@ -229,7 +345,7 @@ procedure TForm1.DecompressionButtonClick(Sender: TObject);
 begin
   if (Self.OpenDialog1.FileName<>'') and (ExtractFileExt(Form1.OpenDialog1.FileName)='.fyRLE') then
   begin
-    decompressRLE(Self.OpenDialog1.FileName);
+    StartDecompression(Self.OpenDialog1.FileName,1);
   end;
 
 end;
