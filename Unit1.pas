@@ -147,7 +147,7 @@ begin
   case z of
     1:
       begin
-        newName:=newName+'.fyRLE';
+        newName:=newName+'.xrle';
         newPath:=newPath+newName;
 
         RLECompress(strs,newPath);
@@ -155,7 +155,7 @@ begin
       end;
     2:
       begin
-        newName:=newName+'.fyHUFF';
+        newName:=newName+'.xhfm';
         newPath:=newPath+newName;
 
 //        HUFFCompress(strs,newPath);
@@ -343,7 +343,7 @@ end;
 
 procedure TForm1.DecompressionButtonClick(Sender: TObject);
 begin
-  if (Self.OpenDialog1.FileName<>'') and (ExtractFileExt(Form1.OpenDialog1.FileName)='.fyRLE') then
+  if (Self.OpenDialog1.FileName<>'') and (ExtractFileExt(Form1.OpenDialog1.FileName)='.xrle') then
   begin
     StartDecompression(Self.OpenDialog1.FileName,1);
   end;
@@ -400,11 +400,11 @@ begin
     Self.LabelFilePath.Caption:='File path: ' + OpenDialog1.FileName;
 
     s:=0;
-    if ExtractFileExt(Self.OpenDialog1.FileName)='.fyRLE' then
+    if ExtractFileExt(Self.OpenDialog1.FileName)='.xrle' then
     begin
       s:=1;
     end else
-          if ExtractFileExt(Self.OpenDialog1.FileName)='.fyHUFF' then
+          if ExtractFileExt(Self.OpenDialog1.FileName)='.xhfm' then
           begin
             s:=2;
           end;
