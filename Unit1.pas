@@ -308,7 +308,8 @@ begin
       end;
     2:
       begin
-
+//        decompressHFM(txt,newPath);
+//        write('Huffman ');
       end;
     3:
       begin
@@ -343,10 +344,17 @@ end;
 
 procedure TForm1.DecompressionButtonClick(Sender: TObject);
 begin
-  if (Self.OpenDialog1.FileName<>'') and (ExtractFileExt(Form1.OpenDialog1.FileName)='.xrle') then
+  if (Self.OpenDialog1.FileName<>'') then
   begin
-    StartDecompression(Self.OpenDialog1.FileName,1);
-  end;
+    if ExtractFileExt(Form1.OpenDialog1.FileName)='.xrle' then
+    begin
+      StartDecompression(Self.OpenDialog1.FileName,1);
+    end else
+          if ExtractFileExt(Form1.OpenDialog1.FileName)='.xhfm' then
+          begin
+            StartDecompression(Self.OpenDialog1.FileName,2);
+          end;
+  end
 
 end;
 
