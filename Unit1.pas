@@ -8,7 +8,7 @@ uses
   System.ImageList, Vcl.ImgList, Vcl.Buttons;
 
 type
-  TText = TStrings;
+  TText = TStringList;
   TFile = TextFile;
   TForm1 = class(TForm)
     Label1: TLabel;
@@ -40,6 +40,14 @@ implementation
 
 {$R *.dfm}
 
+function GetFileSize(FileName: String): Int64;
+var FS: TFileStream;
+begin
+  FS := TFileStream.Create(FileName, fmOpenRead);
+  Result := FS.Size;
+  FS.Free;
+end;
+
 //n-Full File Path
 procedure printFileInfo(n:String);
 begin
@@ -49,16 +57,37 @@ begin
   writeln('Path       = '+ExtractFilePath  (n));
   writeln('Name       = '+ExtractFileName  (n));
   writeln('Extention  = '+ExtractFileExt   (n));
+  writeln('Size       = '+IntToStr(GetFileSize(n)));
 end;
 
 
-procedure RLECompression(strs:TText);
+
+
+
+procedure RLECompress(var strs:TText);
+var
+  i: Integer;
+  buff: String;
+begin
+  for i:=0 to strs.Count-1 do
+  begin
+
+  end;
+
+
+end;
+
+procedure RLEStart(strs:TText);
 var
   i,p: Integer;
   F:TFile;
   newPath,newName: String;
 begin
-  writeln('RLC Compression:');
+
+  RLECompress(strs);
+
+
+  writeln('RLE Compression Result:');
   for i := 0 to strs.Count-1 do
   begin
     writeln(strs[i]);
@@ -71,21 +100,21 @@ begin
   p:=pos(ExtractFileExt(Form1.OpenDialog1.FileName),newName);
   if p<>0 then
   begin
-    Insert('_RLE',newName,p);
-  end else
-      begin
-        newName:=newName+'_RLE';
-      end;
+    Delete(newName,p,length(ExtractFileExt(Form1.OpenDialog1.FileName)));
+  end;
+
+  newName:=newName+'.fy';
   newPath:=newPath+newName;
 
 
 
   AssignFile(F,newPath);
   Rewrite(F);
-  for i := 0 to strs.Count-1 do
+  for i := 0 to strs.Count-2 do
   begin
     writeln(F,strs[i]);
   end;
+  write(F,strs[i]);
   CloseFile(F);
 
   writeln;
@@ -95,16 +124,20 @@ begin
 end;
 
 
+
+
+
 procedure TForm1.CompressionButtonClick(Sender: TObject);
 var
   txt: TText;
   i:integer;
 begin
-  txt:=Self.Memo1.Lines;
+  txt:= TStringList.Create;
+  txt.LoadFromFile(Self.OpenDialog1.FileName);
 
   AllocConsole;
   writeln('Uncompressed text:');
-  for i := 0 to Self.Memo1.Lines.Count-1 do
+  for i := 0 to txt.Count-1 do
   begin
     writeln(txt[i]);
   end;
@@ -116,7 +149,7 @@ begin
 
   if Self.CheckBoxRLE.Checked then
   begin
-    RLECompression(txt);
+    RLEStart(txt);
   end;
   //FreeConsole;
 end;
@@ -142,7 +175,7 @@ procedure TForm1.OpenButtonClick(Sender: TObject);
 begin
   if OpenDialog1.Execute() then
   begin
-    Self.Memo1.Lines.LoadFromFile(OpenDialog1.FileName);
+    Self.Memo1.Lines.LoadFromFile(Self.OpenDialog1.FileName);
 
     Self.OpenButton.Caption:='Open another file';
     Self.OpenLabel.Hide;
