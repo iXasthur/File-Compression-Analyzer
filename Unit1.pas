@@ -309,7 +309,7 @@ begin
     2:
       begin
 //        decompressHFM(txt,newPath);
-//        write('Huffman ');
+        write('Huffman ');
       end;
     3:
       begin
