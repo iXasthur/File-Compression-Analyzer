@@ -132,7 +132,11 @@ begin
       end;
     2:
       begin
+        newName:=newName+'.fyHUFF';
+        newPath:=newPath+newName;
 
+//        HUFFCompress(strs,newPath);
+        write('Huffman ');
       end;
     3:
       begin
@@ -258,7 +262,11 @@ begin
     if ExtractFileExt(Self.OpenDialog1.FileName)='.fyRLE' then
     begin
       s:=1;
-    end;
+    end else
+          if ExtractFileExt(Self.OpenDialog1.FileName)='.fyHUFF' then
+          begin
+            s:=2;
+          end;
 
 
     case s of
@@ -266,6 +274,18 @@ begin
       begin
         Self.DecompressionButton.Enabled:=True;
         Self.DecompressionButton.Caption:='Decompress(RLE)';
+
+        Self.CompressionButton.Enabled:=False;
+
+        Self.CheckBoxRLE.Enabled:=False;
+        Self.CheckBox2.Enabled:=False;
+        Self.CheckBox3.Enabled:=False;
+        Self.CheckBoxExport.Enabled:=True;
+      end;
+    2:
+      begin
+        Self.DecompressionButton.Enabled:=True;
+        Self.DecompressionButton.Caption:='Decompress(Huffman)';
 
         Self.CompressionButton.Enabled:=False;
 
