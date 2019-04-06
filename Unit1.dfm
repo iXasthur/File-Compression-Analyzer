@@ -114,7 +114,7 @@ object Form1: TForm1
       item
         Column = 1
         ColumnSpan = 3
-        Control = CheckBox1
+        Control = CheckBoxRLE
         Row = 4
       end
       item
@@ -245,13 +245,15 @@ object Form1: TForm1
       ExplicitWidth = 23
       ExplicitHeight = 22
     end
-    object CheckBox1: TCheckBox
+    object CheckBoxRLE: TCheckBox
       Left = 79
       Top = 213
       Width = 233
       Height = 53
       Align = alClient
       Caption = 'RLE'
+      Checked = True
+      State = cbChecked
       TabOrder = 1
     end
     object CheckBox2: TCheckBox
@@ -261,6 +263,8 @@ object Form1: TForm1
       Height = 53
       Align = alClient
       Caption = 'Huffman'
+      Checked = True
+      State = cbChecked
       TabOrder = 2
     end
     object CheckBox3: TCheckBox

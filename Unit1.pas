@@ -8,7 +8,7 @@ uses
   System.ImageList, Vcl.ImgList, Vcl.Buttons;
 
 type
-  TString = TStrings;
+  TText = TStrings;
   TFile = TextFile;
   TForm1 = class(TForm)
     Label1: TLabel;
@@ -20,7 +20,7 @@ type
     LabelFilePreview: TLabel;
     LabelFilePath: TLabel;
     CompressionButton: TSpeedButton;
-    CheckBox1: TCheckBox;
+    CheckBoxRLE: TCheckBox;
     CheckBox2: TCheckBox;
     CheckBox3: TCheckBox;
     procedure OpenButtonClick(Sender: TObject);
@@ -40,21 +40,66 @@ implementation
 
 {$R *.dfm}
 
+//n-Full File Path
+procedure printFileInfo(n:String);
+begin
+  Writeln('File Info:');
+  writeln('Drive      = '+ExtractFileDrive (n));
+  writeln('Catalog    = '+ExtractFileDir   (n));
+  writeln('Path       = '+ExtractFilePath  (n));
+  writeln('Name       = '+ExtractFileName  (n));
+  writeln('Extention  = '+ExtractFileExt   (n));
+end;
+
+
+procedure RLECompression(strs:TText);
+var
+  i,p: Integer;
+  F:TFile;
+  newPath,newName: String;
+begin
+  writeln('RLC Compression:');
+  for i := 0 to strs.Count-1 do
+  begin
+    writeln(strs[i]);
+  end;
+
+
+
+  newPath:=ExtractFilePath(Form1.OpenDialog1.FileName);
+  newName:=ExtractFileName(Form1.OpenDialog1.FileName);
+  p:=pos(ExtractFileExt(Form1.OpenDialog1.FileName),newName);
+  if p<>0 then
+  begin
+    Insert('_RLE',newName,p);
+  end else
+      begin
+        newName:=newName+'_RLE';
+      end;
+  newPath:=newPath+newName;
+
+
+
+  AssignFile(F,newPath);
+  Rewrite(F);
+  for i := 0 to strs.Count-1 do
+  begin
+    writeln(F,strs[i]);
+  end;
+  CloseFile(F);
+
+  writeln;
+  printFileInfo(newPath);
+  writeln;
+  writeln;
+end;
+
 
 procedure TForm1.CompressionButtonClick(Sender: TObject);
 var
-  txt: TString;
-  F: TFile;
+  txt: TText;
   i:integer;
 begin
-//  AssignFile(F,OpenDialog1.FileName);
-//  Reset(F);
-//  while not eof(F) do
-//  begin
-//    Readln(F,buffStr);
-//    str:=str+buffStr;
-//  end;
-//  CloseFile(F);
   txt:=Self.Memo1.Lines;
 
   AllocConsole;
@@ -63,7 +108,16 @@ begin
   begin
     writeln(txt[i]);
   end;
+
   writeln;
+  printFileInfo(Self.OpenDialog1.FileName);
+  writeln;
+  writeln;
+
+  if Self.CheckBoxRLE.Checked then
+  begin
+    RLECompression(txt);
+  end;
   //FreeConsole;
 end;
 
@@ -77,7 +131,7 @@ begin
   Self.LabelFilePath.Hide;
   Self.LabelFilePreview.Caption:='File preview';
 
-  Self.CheckBox1.Enabled:=False;
+  Self.CheckBoxRLE.Enabled:=False;
   Self.CheckBox2.Enabled:=False;
   Self.CheckBox3.Enabled:=False;
 
@@ -96,7 +150,7 @@ begin
     Self.LabelFilePath.Show;
     Self.LabelFilePath.Caption:='File path: ' + OpenDialog1.FileName;
 
-    Self.CheckBox1.Enabled:=True;
+    Self.CheckBoxRLE.Enabled:=True;
     Self.CheckBox2.Enabled:=True;
     Self.CheckBox3.Enabled:=True;
 

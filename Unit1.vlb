@@ -22,9 +22,6 @@ Coordinates=84,10,93,58
 [LabelFilePreview]
 Coordinates=187,10,113,58
 
-[CheckBox1]
-Coordinates=207,78,114,58
-
 [OpenDialog1]
 Coordinates=423,111,90,36
 
@@ -36,4 +33,7 @@ Coordinates=10,146,53,58
 
 []
 Coordinates=359,87,91,36
+
+[CheckBoxRLE]
+Coordinates=207,78,114,58
 
