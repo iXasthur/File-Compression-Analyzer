@@ -23,10 +23,13 @@ type
     CheckBoxRLE: TCheckBox;
     CheckBox2: TCheckBox;
     CheckBox3: TCheckBox;
+    DecompressionButton: TSpeedButton;
+    CheckBoxExport: TCheckBox;
     procedure OpenButtonClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure Label1Click(Sender: TObject);
     procedure CompressionButtonClick(Sender: TObject);
+    procedure DecompressionButtonClick(Sender: TObject);
   private
     { Private declarations }
   public
@@ -63,38 +66,50 @@ end;
 
 
 
-
-procedure RLECompress(var strs:TText);
+function RLECompressString(str: String):String;
 var
   i: Integer;
-  buff: String;
+  buffChar: Char;
 begin
-  for i:=0 to strs.Count-1 do
-  begin
-
-  end;
 
 
+
+  RLECompressString:=IntToStr(length(str));
 end;
 
-procedure RLEStart(strs:TText);
+
+procedure RLECompress(strs:TText; newPath:String);
+var
+  i: Integer;
+  F: TFile;
+begin
+  AssignFile(F,newPath);
+  Rewrite(F);
+
+  if strs.Count>1 then
+  begin
+    for i:=0 to strs.Count-2 do
+    begin
+      writeln(F,RLECompressString(strs[i]));
+    end;
+    write(F,RLECompressString(strs[i]));
+  end else
+        if strs.Count=1 then
+        begin
+          write(F,RLECompressString(strs[0]));
+        end;
+
+  CloseFile(F);
+end;
+
+
+
+procedure CompressionStart(strs:TText;z:integer);
 var
   i,p: Integer;
   F:TFile;
   newPath,newName: String;
 begin
-
-  RLECompress(strs);
-
-
-  writeln('RLE Compression Result:');
-  for i := 0 to strs.Count-1 do
-  begin
-    writeln(strs[i]);
-  end;
-
-
-
   newPath:=ExtractFilePath(Form1.OpenDialog1.FileName);
   newName:=ExtractFileName(Form1.OpenDialog1.FileName);
   p:=pos(ExtractFileExt(Form1.OpenDialog1.FileName),newName);
@@ -103,28 +118,42 @@ begin
     Delete(newName,p,length(ExtractFileExt(Form1.OpenDialog1.FileName)));
   end;
 
-  newName:=newName+'.fy';
-  newPath:=newPath+newName;
 
 
 
-  AssignFile(F,newPath);
-  Rewrite(F);
-  for i := 0 to strs.Count-2 do
-  begin
-    writeln(F,strs[i]);
+  case z of
+    1:
+      begin
+        newName:=newName+'.fyRLE';
+        newPath:=newPath+newName;
+
+        RLECompress(strs,newPath);
+        write('RLE ');
+      end;
+    2:
+      begin
+
+      end;
+    3:
+      begin
+
+      end;
   end;
-  write(F,strs[i]);
-  CloseFile(F);
+
+
+  strs.LoadFromFile(newPath);
+  writeln('Compression Result:');
+  for i := 0 to strs.Count-1 do
+  begin
+    writeln(strs[i]);
+  end;
+
 
   writeln;
   printFileInfo(newPath);
   writeln;
   writeln;
 end;
-
-
-
 
 
 procedure TForm1.CompressionButtonClick(Sender: TObject);
@@ -149,10 +178,47 @@ begin
 
   if Self.CheckBoxRLE.Checked then
   begin
-    RLEStart(txt);
+    CompressionStart(txt,1);
   end;
   //FreeConsole;
 end;
+
+
+
+
+
+
+procedure decompressRLE(path:String);
+var
+  i: Integer;
+begin
+
+end;
+
+
+procedure TForm1.DecompressionButtonClick(Sender: TObject);
+begin
+  if (Self.OpenDialog1.FileName<>'') and (ExtractFileExt(Form1.OpenDialog1.FileName)='.fyRLE') then
+  begin
+    decompressRLE(Self.OpenDialog1.FileName);
+  end;
+
+end;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 procedure TForm1.FormCreate(Sender: TObject);
 begin
@@ -167,11 +233,16 @@ begin
   Self.CheckBoxRLE.Enabled:=False;
   Self.CheckBox2.Enabled:=False;
   Self.CheckBox3.Enabled:=False;
+  Self.CheckBoxExport.Enabled:=False;
 
   Self.CompressionButton.Enabled:=False;
+  Self.DecompressionButton.Enabled:=False;
+
 end;
 
 procedure TForm1.OpenButtonClick(Sender: TObject);
+var
+  s:integer;
 begin
   if OpenDialog1.Execute() then
   begin
@@ -183,12 +254,39 @@ begin
     Self.LabelFilePath.Show;
     Self.LabelFilePath.Caption:='File path: ' + OpenDialog1.FileName;
 
-    Self.CheckBoxRLE.Enabled:=True;
-    Self.CheckBox2.Enabled:=True;
-    Self.CheckBox3.Enabled:=True;
+    s:=0;
+    if ExtractFileExt(Self.OpenDialog1.FileName)='.fyRLE' then
+    begin
+      s:=1;
+    end;
 
-    Self.CompressionButton.Enabled:=True;
 
+    case s of
+    1:
+      begin
+        Self.DecompressionButton.Enabled:=True;
+        Self.DecompressionButton.Caption:='Decompress(RLE)';
+
+        Self.CompressionButton.Enabled:=False;
+
+        Self.CheckBoxRLE.Enabled:=False;
+        Self.CheckBox2.Enabled:=False;
+        Self.CheckBox3.Enabled:=False;
+        Self.CheckBoxExport.Enabled:=True;
+      end;
+    else
+      begin
+        Self.DecompressionButton.Enabled:=False;
+        Self.DecompressionButton.Caption:='Decompress';
+
+        Self.CompressionButton.Enabled:=True;
+
+        Self.CheckBoxRLE.Enabled:=True;
+        Self.CheckBox2.Enabled:=True;
+        Self.CheckBox3.Enabled:=True;
+        Self.CheckBoxExport.Enabled:=False;
+      end;
+    end;
   end;
 end;
 

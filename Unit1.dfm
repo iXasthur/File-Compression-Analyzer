@@ -128,6 +128,18 @@ object Form1: TForm1
         ColumnSpan = 4
         Control = CheckBox3
         Row = 5
+      end
+      item
+        Column = 4
+        ColumnSpan = 4
+        Control = DecompressionButton
+        Row = 6
+      end
+      item
+        Column = 4
+        ColumnSpan = 2
+        Control = CheckBoxExport
+        Row = 7
       end>
     ParentBackground = False
     RowCollection = <
@@ -277,6 +289,35 @@ object Form1: TForm1
       Align = alLeft
       Caption = 'Analyse'
       TabOrder = 3
+    end
+    object DecompressionButton: TSpeedButton
+      AlignWithMargins = True
+      Left = 322
+      Top = 329
+      Width = 289
+      Height = 33
+      Margins.Left = 10
+      Margins.Top = 10
+      Margins.Right = 10
+      Margins.Bottom = 10
+      Align = alClient
+      Caption = 'Decompress'
+      OnClick = DecompressionButtonClick
+      ExplicitLeft = 392
+      ExplicitTop = 288
+      ExplicitWidth = 23
+      ExplicitHeight = 22
+    end
+    object CheckBoxExport: TCheckBox
+      AlignWithMargins = True
+      Left = 322
+      Top = 375
+      Width = 143
+      Height = 47
+      Margins.Left = 10
+      Align = alLeft
+      Caption = 'Export as .txt'
+      TabOrder = 4
     end
   end
   object OpenDialog1: TOpenDialog
