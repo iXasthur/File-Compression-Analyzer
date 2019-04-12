@@ -4,9 +4,6 @@ Coordinates=10,10,64,58
 [CheckBox3]
 Coordinates=310,10,114,58
 
-[CheckBox2]
-Coordinates=73,146,114,58
-
 [CompressionButton]
 Coordinates=290,146,127,36
 
@@ -36,4 +33,7 @@ Coordinates=359,87,91,36
 
 [CheckBoxRLE]
 Coordinates=207,78,114,58
+
+[CheckBoxHUFF]
+Coordinates=73,146,114,58
 

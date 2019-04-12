@@ -120,7 +120,7 @@ object Form1: TForm1
       item
         Column = 1
         ColumnSpan = 3
-        Control = CheckBox2
+        Control = CheckBoxHUFF
         Row = 5
       end
       item
@@ -264,11 +264,9 @@ object Form1: TForm1
       Height = 53
       Align = alClient
       Caption = 'RLE'
-      Checked = True
-      State = cbChecked
       TabOrder = 1
     end
-    object CheckBox2: TCheckBox
+    object CheckBoxHUFF: TCheckBox
       Left = 79
       Top = 266
       Width = 233

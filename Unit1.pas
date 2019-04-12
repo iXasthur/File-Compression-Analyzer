@@ -7,9 +7,27 @@ uses
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.ExtCtrls, Vcl.Menus,
   System.ImageList, Vcl.ImgList, Vcl.Buttons;
 
+
+
 type
   TText = TStringList;
   TFile = TextFile;
+
+  THuffArrayElement = Record
+    symbolCode: Integer;
+    count: Integer;
+  end;
+  THuffArray = Array of THuffArrayElement;
+
+  HUFFTreeNode = Record
+    data: integer;
+    left: ^HUFFTreeNode;
+    right: ^HUFFTreeNode;
+  end;
+  HUFFTreePointer = ^HUFFTreeNode;
+
+
+type
   TForm1 = class(TForm)
     Label1: TLabel;
     GridPanelMain: TGridPanel;
@@ -21,7 +39,7 @@ type
     LabelFilePath: TLabel;
     CompressionButton: TSpeedButton;
     CheckBoxRLE: TCheckBox;
-    CheckBox2: TCheckBox;
+    CheckBoxHUFF: TCheckBox;
     CheckBox3: TCheckBox;
     DecompressionButton: TSpeedButton;
     CheckBoxExport: TCheckBox;
@@ -35,6 +53,13 @@ type
   public
     { Public declarations }
   end;
+
+
+
+
+
+
+
 
 var
   Form1: TForm1;
@@ -65,7 +90,7 @@ end;
 
 
 
-
+//-------RLE-------
 function RLECompressString(str: String):String;
 var
   s: Integer;
@@ -125,6 +150,83 @@ begin
 
   CloseFile(F);
 end;
+//-----------------
+
+
+
+//-----HUFFMAN-----
+function HUFFCompressString(str: String):String;
+var
+  i: Integer;
+begin
+
+end;
+
+function HUFFGetCount(var arr:THuffArray; str: String):integer;
+var
+  i,n: Integer;
+  buffChar: char;
+  check: boolean;
+begin
+  n:=-1;
+  while length(str)>0 do
+  begin
+    n:=n+1;
+    buffChar:=str[1];
+    arr[n].symbolCode:=ord(buffChar);
+    while pos(buffChar,str)<>0 do
+    begin
+      arr[n].count:=arr[n].count+1;
+      delete(str, pos(buffChar,str), 1);
+    end;
+
+  end;
+  HUFFGetCount:=n+1;
+end;
+
+
+procedure HUFFCompress(strs:TText; newPath:String);
+var
+  i,n: Integer;
+  s: String;
+  F: TFile;
+  arr: THuffArray;
+begin
+  s:=strs.Text;
+
+  SetLength(arr,254);
+  n:=HUFFGetCount(arr,s);
+  SetLength(arr,n);
+
+
+  AssignFile(F,newPath);
+  Rewrite(F);
+
+  //HuffTable in file
+  for i := 0 to length(arr)-1 do
+  begin
+    writeln('#',arr[i].symbolCode,' - ',arr[i].count);
+    write(F,Chr(arr[i].symbolCode),IntToStr(arr[i].count),#27);
+  end;
+  write(F,#27,#27);
+  //
+
+
+
+
+
+  CloseFile(F);
+
+  Finalize(arr);
+end;
+//-----------------
+
+
+
+
+
+
+
 
 
 
@@ -158,7 +260,7 @@ begin
         newName:=newName+'.xhfm';
         newPath:=newPath+newName;
 
-//        HUFFCompress(strs,newPath);
+        HUFFCompress(strs,newPath);
         write('Huffman ');
       end;
     3:
@@ -207,12 +309,20 @@ begin
   begin
     CompressionStart(txt,1);
   end;
+
+  if Self.CheckBoxHUFF.Checked then
+  begin
+    CompressionStart(txt,2);
+  end;
+
   txt.Free;
   //FreeConsole;
 end;
 
 
 
+
+//-------RLE-------
 function decompressRLEString(str:String):String;
 var
   s,i: Integer;
@@ -246,7 +356,6 @@ begin
         end;
 
 
-//  decompressRLEString:=IntToStr(length(str));
   decompressRLEString:=buffStr;
 end;
 
@@ -275,6 +384,33 @@ begin
 
   CloseFile(F);
 end;
+//-----------------
+
+
+
+
+//-----HUFFMAN-----
+function decompressHFMString(str:String):String;
+var
+  i: Integer;
+begin
+
+end;
+
+
+procedure decompressHFM(txt:TText;newPath:String);
+var
+  F:TFile;
+  i:integer;
+begin
+  AssignFile(F,newPath);
+  Rewrite(F);
+
+
+  CloseFile(F);
+end;
+//-----------------
+
 
 
 procedure StartDecompression(path:String;z:integer);
@@ -308,7 +444,7 @@ begin
       end;
     2:
       begin
-//        decompressHFM(txt,newPath);
+        decompressHFM(txt,newPath);
         write('Huffman ');
       end;
     3:
@@ -384,7 +520,7 @@ begin
   Self.LabelFilePreview.Caption:='File preview';
 
   Self.CheckBoxRLE.Enabled:=False;
-  Self.CheckBox2.Enabled:=False;
+  Self.CheckBoxHUFF.Enabled:=False;
   Self.CheckBox3.Enabled:=False;
   Self.CheckBoxExport.Enabled:=False;
 
@@ -427,7 +563,7 @@ begin
         Self.CompressionButton.Enabled:=False;
 
         Self.CheckBoxRLE.Enabled:=False;
-        Self.CheckBox2.Enabled:=False;
+        Self.CheckBoxHUFF.Enabled:=False;
         Self.CheckBox3.Enabled:=False;
         Self.CheckBoxExport.Enabled:=True;
       end;
@@ -439,7 +575,7 @@ begin
         Self.CompressionButton.Enabled:=False;
 
         Self.CheckBoxRLE.Enabled:=False;
-        Self.CheckBox2.Enabled:=False;
+        Self.CheckBoxHUFF.Enabled:=False;
         Self.CheckBox3.Enabled:=False;
         Self.CheckBoxExport.Enabled:=True;
       end;
@@ -451,7 +587,7 @@ begin
         Self.CompressionButton.Enabled:=True;
 
         Self.CheckBoxRLE.Enabled:=True;
-        Self.CheckBox2.Enabled:=True;
+        Self.CheckBoxHUFF.Enabled:=True;
         Self.CheckBox3.Enabled:=True;
         Self.CheckBoxExport.Enabled:=False;
       end;
