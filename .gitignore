@@ -174,3 +174,5 @@ Win32/Debug/R_FirmsAndVacancies.txt
 Win32/Debug/R_Candidates.txt
 Win32/Debug/A1.txt
 Win32/Debug/Save_A1.txt
+*.xhfm
+*.xrle

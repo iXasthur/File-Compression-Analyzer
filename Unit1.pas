@@ -270,43 +270,44 @@ end;
 
 procedure OutputTree(head:HuffTreePointer);
 var
-  elementL,elementR: HuffTreePointer;
+  element: HuffTreePointer;
   check: Boolean;
   i: integer;
 begin
-  check:=true;
-  elementL:=head;
-  elementR:=head;
-
-  while check=true do
-  begin
-    check:=false;
-    elementL:=elementL.left;
-    if elementL.right<>nil then
-    begin
-      writeln(chr(elementL.right.symbol));
-      check:=true;
-    end else
-        begin
-          writeln(chr(elementL.symbol));
-        end;
-  end;
-
-
+  writeln('Left Branch');
+  element:=head;
   check:=true;
   while check=true do
   begin
     check:=false;
-    elementR:=elementR.right;
-    if elementR.left<>nil then
+    element:=element.left;
+    if element.right<>nil then
     begin
-      writeln(chr(elementR.left.symbol));
+      write(chr(element.right.symbol));
       check:=true;
     end else
         begin
-          writeln(chr(elementR.symbol));
+          writeln(chr(element.symbol));
         end;
   end;
+
+  writeln('Right Branch');
+  element:=head;
+  check:=true;
+  while check=true do
+  begin
+    check:=false;
+    element:=element.right;
+    if element.left<>nil then
+    begin
+      write(chr(element.left.symbol));
+      check:=true;
+    end else
+        begin
+          writeln(chr(element.symbol));
+        end;
+  end;
+  writeln;
 
 end;
 
