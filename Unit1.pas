@@ -229,7 +229,6 @@ begin
   begin
     new(elementL.left);
     elementL:=elementL.left;
-
     elementL.symbol:=-1;
     elementL.left:=nil;
 
@@ -276,13 +275,14 @@ var
   i: integer;
 begin
   check:=true;
-  elementL:=head;
-  elementR:=head;
+  elementL:=head.left;
+  elementR:=head.right;
 
-//  while check do
-//  begin
-//
-//  end;
+  while check=true do
+  begin
+
+    check:=false;
+  end;
 
 end;
 
