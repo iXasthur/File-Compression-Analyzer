@@ -241,20 +241,20 @@ begin
     if n<length(arr)-2 then
     begin
       new(elementR.right);
-      elementR:=elementR.left;
+      elementR:=elementR.right;
       elementR.symbol:=-1;
-      elementR.left:=nil;
+      elementR.right:=nil;
 
-      new(elementR.right);
-      elementR.right.right:=nil;
-      elementR.right.left:=nil;
-      elementR.right.symbol:=arr[n].symbolCode;
+      new(elementR.left);
+      elementR.left.right:=nil;
+      elementR.left.left:=nil;
+      elementR.left.symbol:=arr[n].symbolCode;
       n:=n+1;
     end;
   end;
 
-  new(elementR.left);
-  elementR:=elementR.left;
+  new(elementR.right);
+  elementR:=elementR.right;
   elementR.right:=nil;
   elementR.left:=nil;
   elementR.symbol:=arr[n].symbolCode;
@@ -275,13 +275,37 @@ var
   i: integer;
 begin
   check:=true;
-  elementL:=head.left;
-  elementR:=head.right;
+  elementL:=head;
+  elementR:=head;
 
   while check=true do
   begin
-
     check:=false;
+    elementL:=elementL.left;
+    if elementL.right<>nil then
+    begin
+      writeln(chr(elementL.right.symbol));
+      check:=true;
+    end else
+        begin
+          writeln(chr(elementL.symbol));
+        end;
+  end;
+
+
+  check:=true;
+  while check=true do
+  begin
+    check:=false;
+    elementR:=elementR.right;
+    if elementR.left<>nil then
+    begin
+      writeln(chr(elementR.left.symbol));
+      check:=true;
+    end else
+        begin
+          writeln(chr(elementR.symbol));
+        end;
   end;
 
 end;
