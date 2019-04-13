@@ -19,12 +19,13 @@ type
   end;
   THuffArray = Array of THuffArrayElement;
 
-  HUFFTreeNode = Record
-    data: integer;
-    left: ^HUFFTreeNode;
-    right: ^HUFFTreeNode;
-  end;
   HUFFTreePointer = ^HUFFTreeNode;
+  HUFFTreeNode = Record
+    symbol: Integer;
+    left: HUFFTreePointer;
+    right: HUFFTreePointer;
+  end;
+
 
 
 type
@@ -162,6 +163,7 @@ begin
 
 end;
 
+
 function HUFFGetCount(var arr:THuffArray; str: String):integer;
 var
   i,n: Integer;
@@ -185,19 +187,123 @@ begin
 end;
 
 
+procedure HUFFSort(var arr:THuffArray);
+var
+  i: integer;
+  save:THuffArrayElement;
+  check:Boolean;
+begin
+  check:=false;
+  while check=false do
+  begin
+    check:=true;
+    for i := 0 to length(arr)-2 do
+    begin
+      if arr[i].count<arr[i+1].count then
+      begin
+        save:=arr[i];
+        arr[i]:=arr[i+1];
+        arr[i+1]:=save;
+        check:=false;
+      end;
+    end;
+  end;
+end;
+
+procedure HUFFCreateTree(var head: HuffTreePointer; arr:THuffArray);
+var
+  elementL,elementR: HuffTreePointer;
+  n:integer;
+begin
+  n:=0;
+
+  new(head);
+  head.symbol:=-1;
+  head.left:=nil;
+  head.right:=nil;
+
+  elementL:=head;
+  elementR:=head;
+
+  while n<length(arr)-2 do
+  begin
+    new(elementL.left);
+    elementL:=elementL.left;
+
+    elementL.symbol:=-1;
+    elementL.left:=nil;
+
+    new(elementL.right);
+    elementL.right.right:=nil;
+    elementL.right.left:=nil;
+    elementL.right.symbol:=arr[n].symbolCode;
+    n:=n+1;
+
+    if n<length(arr)-2 then
+    begin
+      new(elementR.right);
+      elementR:=elementR.left;
+      elementR.symbol:=-1;
+      elementR.left:=nil;
+
+      new(elementR.right);
+      elementR.right.right:=nil;
+      elementR.right.left:=nil;
+      elementR.right.symbol:=arr[n].symbolCode;
+      n:=n+1;
+    end;
+  end;
+
+  new(elementR.left);
+  elementR:=elementR.left;
+  elementR.right:=nil;
+  elementR.left:=nil;
+  elementR.symbol:=arr[n].symbolCode;
+
+  new(elementL.left);
+  elementL:=elementL.left;
+  elementL.right:=nil;
+  elementL.left:=nil;
+  elementL.symbol:=arr[n+1].symbolCode;
+
+
+end;
+
+procedure OutputTree(head:HuffTreePointer);
+var
+  elementL,elementR: HuffTreePointer;
+  check: Boolean;
+  i: integer;
+begin
+  check:=true;
+  elementL:=head;
+  elementR:=head;
+
+//  while check do
+//  begin
+//
+//  end;
+
+end;
+
 procedure HUFFCompress(strs:TText; newPath:String);
 var
   i,n: Integer;
   s: String;
   F: TFile;
   arr: THuffArray;
+  treeHead: HuffTreePointer;
 begin
   s:=strs.Text;
+  delete(s,length(s)-1,2); //Deletes last #13#10
 
   SetLength(arr,254);
   n:=HUFFGetCount(arr,s);
   SetLength(arr,n);
+  HUFFSort(arr);
 
+  HUFFCreateTree(treeHead,arr);
+  OutputTree(treeHead);
 
   AssignFile(F,newPath);
   Rewrite(F);
@@ -206,7 +312,8 @@ begin
   for i := 0 to length(arr)-1 do
   begin
     writeln('#',arr[i].symbolCode,' - ',arr[i].count);
-    write(F,Chr(arr[i].symbolCode),IntToStr(arr[i].count),#27);
+//    write(F,Chr(arr[i].symbolCode),IntToStr(arr[i].count),#27);
+    write(F,Chr(arr[i].symbolCode));
   end;
   write(F,#27,#27);
   //
@@ -216,7 +323,7 @@ begin
 
 
   CloseFile(F);
-
+  //ClearTree!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
   Finalize(arr);
 end;
 //-----------------
