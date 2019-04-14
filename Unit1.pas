@@ -5,7 +5,7 @@ interface
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.ExtCtrls, Vcl.Menus,
-  System.ImageList, Vcl.ImgList, Vcl.Buttons;
+  System.ImageList, Vcl.ImgList, Vcl.Buttons, Math;
 
 
 
@@ -316,7 +316,7 @@ begin
 
 end;
 
-function HUFFGetSymbol(head:HuffTreePointer; c:Char):String;
+function HUFFGetBSymbol(head:HuffTreePointer; c:Char):String;
 var
   buff,buffL,buffR: String;
   elementL, elementR: HuffTreePointer;
@@ -379,9 +379,57 @@ begin
     end;
   end;
 
-  HUFFGetSymbol:=buff;
+//  writeln(c,'_',buff);
+  HUFFGetBSymbol:=buff;
 end;
 
+function StrBinToInt(s: String; l:integer):Integer;
+var
+  i: integer;
+  value: integer;
+begin
+  value:=0;
+  for i:=1 to l do
+  begin
+    if s[i]='1' then
+    begin
+//      value:=value+round(exp(abs(i-8)*ln(2)));
+      value:=value+round(power(2,abs(i-l)));
+    end;
+  end;
+//  write(' ',value);
+  StrBinToInt:=value;
+end;
+
+function HUFFStringBinaryToChar(s:String):String;
+var
+  buff:String;
+  lastLength,i: Integer;
+begin
+  buff:='';
+
+  while length(s)>7 do
+  begin
+    buff:=buff+chr(StrBinToInt(s,7));
+    delete(s,1,7);
+  end;
+//  writeln;
+  {
+    Next part adds (lastLength) additional 0 to beginning of the next sequence
+  }
+  if (length(s)>0) and (length(s)<=7) then
+  begin
+    lastLength:=length(s);
+    if lastLength<>0 then
+    begin
+      buff:=buff+chr(StrBinToInt(s,lastLength));
+    end;
+    buff:=buff+IntToStr(7-lastLength);
+  end;
+
+
+  HUFFStringBinaryToChar:=buff;
+end;
 
 function HUFFCompressString(head:HuffTreePointer; s: String):String;
 var
@@ -391,8 +439,11 @@ begin
   encodedStr:='';
   for i:=1 to length(s) do
   begin
-    encodedStr:=encodedStr+HUFFGetSymbol(head, s[i]);
+    encodedStr:=encodedStr+HUFFGetBSymbol(head, s[i]);
   end;
+  //writeln(encodedStr,' ',length(encodedStr));
+
+  encodedStr:=HUFFStringBinaryToChar(encodedStr);
 
   HUFFCompressString:=encodedStr;
 end;
@@ -415,7 +466,7 @@ begin
   HUFFSort(arr);
 
   HUFFCreateTree(treeHead,arr);
-  OutputTree(treeHead);
+  //OutputTree(treeHead);
   s:=HUFFCompressString(treeHead, s);
 
   AssignFile(F,newPath);
@@ -424,8 +475,7 @@ begin
   //HuffTable in file
   for i := 0 to length(arr)-1 do
   begin
-    writeln('#',arr[i].symbolCode,' - ',arr[i].count);
-//    write(F,Chr(arr[i].symbolCode),IntToStr(arr[i].count),#27);
+    //writeln('#',arr[i].symbolCode,' - ',arr[i].count);
     write(F,Chr(arr[i].symbolCode));
   end;
   write(F,#27,#27);
@@ -433,11 +483,22 @@ begin
 
   write(F,s);
 
-
-
   CloseFile(F);
   //ClearTree!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
   Finalize(arr);
+
+
+
+//  //Remove
+//  strs.LoadFromFile(newPath);
+//  s:=strs.Text;
+//  delete(s,length(s)-1,2);
+//  writeln;
+//  for i := 1 to length(s) do
+//  begin
+//    write(' ',IntToStr(ord(s[i])));
+//  end;
+//  writeln;
 end;
 //-----------------
 
