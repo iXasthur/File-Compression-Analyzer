@@ -244,17 +244,23 @@ begin
     end;
   end;
 
-  new(elementR.right);
-  elementR:=elementR.right;
-  elementR.right:=nil;
-  elementR.left:=nil;
-  elementR.symbol:=arr[n].symbolCode;
+  if length(arr)>0 then
+  begin
+    new(elementR.right);
+    elementR:=elementR.right;
+    elementR.right:=nil;
+    elementR.left:=nil;
+    elementR.symbol:=arr[n].symbolCode;
 
-  new(elementL.left);
-  elementL:=elementL.left;
-  elementL.right:=nil;
-  elementL.left:=nil;
-  elementL.symbol:=arr[n+1].symbolCode;
+    if length(arr)>1 then
+    begin
+      new(elementL.left);
+      elementL:=elementL.left;
+      elementL.right:=nil;
+      elementL.left:=nil;
+      elementL.symbol:=arr[n+1].symbolCode;
+    end;
+  end;
 
 
 end;
@@ -271,15 +277,19 @@ begin
   while check=true do
   begin
     check:=false;
-    element:=element.left;
-    if element.right<>nil then
+    if element.left<>nil then
     begin
-      write(chr(element.right.symbol));
-      check:=true;
-    end else
-        begin
-          writeln(chr(element.symbol));
-        end;
+      element:=element.left;
+
+      if element.right<>nil then
+      begin
+        write(chr(element.right.symbol));
+        check:=true;
+      end else
+          begin
+            writeln(chr(element.symbol));
+          end;
+    end;
   end;
 
   writeln('Right Branch');
@@ -288,15 +298,19 @@ begin
   while check=true do
   begin
     check:=false;
-    element:=element.right;
-    if element.left<>nil then
+    if element.right<>nil then
     begin
-      write(chr(element.left.symbol));
-      check:=true;
-    end else
-        begin
-          writeln(chr(element.symbol));
-        end;
+      element:=element.right;
+
+      if element.left<>nil then
+      begin
+        write(chr(element.left.symbol));
+        check:=true;
+      end else
+          begin
+            writeln(chr(element.symbol));
+          end;
+    end;
   end;
   writeln;
 
@@ -304,12 +318,70 @@ end;
 
 function HUFFGetSymbol(head:HuffTreePointer; c:Char):String;
 var
-  buff: String;
+  buff,buffL,buffR: String;
+  elementL, elementR: HuffTreePointer;
+  check: Boolean;
 begin
-  buff:=c;
+  buff:='';
+  buffL:='';
+  buffR:='';
+
+  elementL:=head;
+  elementR:=head;
+
+  check:=false;
+  while check=false do
+  begin
+    if elementL.left<>nil then
+    begin
+      elementL:=elementL.left;
+      buffL:=buffL+'0';
+
+      if elementL.symbol=ord(c) then
+      begin
+        buff:=buffL;
+        check:=true;
+      end else
+            if elementL.right<>nil then
+            begin
+              if elementL.right.symbol=ord(c) then
+              begin
+                buffL:=buffL+'1';
+                buff:=buffL;
+                check:=true;
+              end;
+            end;
+    end;
+
+
+    if check<>true then
+    begin
+      if elementR.right<>nil then
+      begin
+        elementR:=elementR.right;
+        buffR:=buffR+'1';
+
+        if elementR.symbol=ord(c) then
+        begin
+          buff:=buffR;
+          check:=true;
+        end else
+              if elementR.left<>nil then
+              begin
+                if elementR.left.symbol=ord(c) then
+                begin
+                  buffR:=buffR+'0';
+                  buff:=buffR;
+                  check:=true;
+                end;
+              end;
+      end;
+    end;
+  end;
 
   HUFFGetSymbol:=buff;
 end;
+
 
 function HUFFCompressString(head:HuffTreePointer; s: String):String;
 var
@@ -317,14 +389,14 @@ var
   encodedStr: String;
 begin
   encodedStr:='';
-  for i:=0 to length(s)-1 do
+  for i:=1 to length(s) do
   begin
-    encodedStr:=encodedStr+HUFFGetSymbol(head, s[1])+' ';
-    delete(s,1,1);
+    encodedStr:=encodedStr+HUFFGetSymbol(head, s[i]);
   end;
 
   HUFFCompressString:=encodedStr;
 end;
+
 
 procedure HUFFCompress(strs:TText; newPath:String);
 var
