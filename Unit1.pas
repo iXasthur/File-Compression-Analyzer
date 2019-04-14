@@ -27,7 +27,6 @@ type
   end;
 
 
-
 type
   TForm1 = class(TForm)
     Label1: TLabel;
@@ -156,14 +155,6 @@ end;
 
 
 //-----HUFFMAN-----
-function HUFFCompressString(str: String):String;
-var
-  i: Integer;
-begin
-
-end;
-
-
 function HUFFGetCount(var arr:THuffArray; str: String):integer;
 var
   i,n: Integer;
@@ -311,6 +302,30 @@ begin
 
 end;
 
+function HUFFGetSymbol(head:HuffTreePointer; c:Char):String;
+var
+  buff: String;
+begin
+  buff:=c;
+
+  HUFFGetSymbol:=buff;
+end;
+
+function HUFFCompressString(head:HuffTreePointer; s: String):String;
+var
+  i: Integer;
+  encodedStr: String;
+begin
+  encodedStr:='';
+  for i:=0 to length(s)-1 do
+  begin
+    encodedStr:=encodedStr+HUFFGetSymbol(head, s[1])+' ';
+    delete(s,1,1);
+  end;
+
+  HUFFCompressString:=encodedStr;
+end;
+
 procedure HUFFCompress(strs:TText; newPath:String);
 var
   i,n: Integer;
@@ -329,6 +344,7 @@ begin
 
   HUFFCreateTree(treeHead,arr);
   OutputTree(treeHead);
+  s:=HUFFCompressString(treeHead, s);
 
   AssignFile(F,newPath);
   Rewrite(F);
@@ -343,7 +359,7 @@ begin
   write(F,#27,#27);
   //
 
-
+  write(F,s);
 
 
 
