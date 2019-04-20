@@ -778,7 +778,7 @@ begin
       begin
         s:='';
       end;
-  Finalize(buff);
+  Finalize(arr);
 
   AssignFile(F,newPath);
   Rewrite(F);
