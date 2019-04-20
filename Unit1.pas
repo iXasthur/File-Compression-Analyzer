@@ -119,7 +119,7 @@ begin
         if length(str)=1 then
         begin
           buffChar:=str[1];
-          buffStr:='1';
+          buffStr:=Chr(1);
           buffStr:=buffStr+buffChar;
         end;
 
