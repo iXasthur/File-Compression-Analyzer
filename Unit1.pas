@@ -5,12 +5,12 @@ interface
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.ExtCtrls, Vcl.Menus,
-  System.ImageList, Vcl.ImgList, Vcl.Buttons, Math;
+  System.ImageList, Vcl.ImgList, Vcl.Buttons, Math, System.IOUtils;
 
 
 
 type
-  TText = TStringList;
+  //TText = TStringList;
   TFile = TextFile;
 
   THuffArrayElement = Record
@@ -122,31 +122,19 @@ begin
           buffStr:=buffStr+buffChar;
         end;
 
-
-//  RLECompressString:=IntToStr(length(str));
   RLECompressString:=buffStr;
 end;
 
 
-procedure RLECompress(strs:TText; newPath:String);
+procedure RLECompress(s:string; newPath:String);
 var
   i: Integer;
   F: TFile;
 begin
   AssignFile(F,newPath);
   Rewrite(F);
-  if strs.Count>1 then
-  begin
-    for i:=0 to strs.Count-2 do
-    begin
-      writeln(F,RLECompressString(strs[i]));
-    end;
-    write(F,RLECompressString(strs[i]));
-  end else
-        if strs.Count=1 then
-        begin
-          write(F,RLECompressString(strs[0]));
-        end;
+  write(F,RLECompressString(s));
+
 
   CloseFile(F);
 end;
@@ -441,7 +429,7 @@ begin
   begin
     encodedStr:=encodedStr+HUFFGetBSymbol(head, s[i]);
   end;
-  //writeln(encodedStr,' ',length(encodedStr));
+  writeln(encodedStr);
 
   encodedStr:=HUFFStringBinaryToChar(encodedStr);
 
@@ -449,24 +437,20 @@ begin
 end;
 
 
-procedure HUFFCompress(strs:TText; newPath:String);
+procedure HUFFCompress(s:String; newPath:String);
 var
   i,n: Integer;
-  s: String;
   F: TFile;
   arr: THuffArray;
   treeHead: HuffTreePointer;
 begin
-  s:=strs.Text;
-  delete(s,length(s)-1,2); //Deletes last #13#10
-
-  SetLength(arr,254);
+  SetLength(arr,255);
   n:=HUFFGetCount(arr,s);
   SetLength(arr,n);
   HUFFSort(arr);
 
   HUFFCreateTree(treeHead,arr);
-  //OutputTree(treeHead);
+  OutputTree(treeHead);
   s:=HUFFCompressString(treeHead, s);
 
   AssignFile(F,newPath);
@@ -475,7 +459,6 @@ begin
   //HuffTable in file
   for i := 0 to length(arr)-1 do
   begin
-    //writeln('#',arr[i].symbolCode,' - ',arr[i].count);
     write(F,Chr(arr[i].symbolCode));
   end;
   write(F,#27,#27);
@@ -484,21 +467,14 @@ begin
   write(F,s);
 
   CloseFile(F);
-  //ClearTree!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
   Finalize(arr);
 
+  //ClearTree!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+  //ClearTree!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+  //ClearTree!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+  //ClearTree!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+  //ClearTree!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-
-//  //Remove
-//  strs.LoadFromFile(newPath);
-//  s:=strs.Text;
-//  delete(s,length(s)-1,2);
-//  writeln;
-//  for i := 1 to length(s) do
-//  begin
-//    write(' ',IntToStr(ord(s[i])));
-//  end;
-//  writeln;
 end;
 //-----------------
 
@@ -511,7 +487,7 @@ end;
 
 
 
-procedure CompressionStart(strs:TText;z:integer);
+procedure CompressionStart(s:string;z:integer);
 var
   i,p: Integer;
   newPath,newName: String;
@@ -525,15 +501,13 @@ begin
   end;
 
 
-
-
   case z of
     1:
       begin
         newName:=newName+'.xrle';
         newPath:=newPath+newName;
 
-        RLECompress(strs,newPath);
+        RLECompress(s,newPath);
         write('RLE ');
       end;
     2:
@@ -541,7 +515,7 @@ begin
         newName:=newName+'.xhfm';
         newPath:=newPath+newName;
 
-        HUFFCompress(strs,newPath);
+        HUFFCompress(s,newPath);
         write('Huffman ');
       end;
     3:
@@ -551,12 +525,10 @@ begin
   end;
 
 
-  strs.LoadFromFile(newPath);
+  s:=System.IOUtils.TFile.ReadAllText(newPath);
   writeln('Compression Result:');
-  for i := 0 to strs.Count-1 do
-  begin
-    writeln(strs[i]);
-  end;
+  writeln(s);
+
 
 
   writeln;
@@ -568,18 +540,13 @@ end;
 
 procedure TForm1.CompressionButtonClick(Sender: TObject);
 var
-  txt: TText;
+  s: String;
   i:integer;
 begin
-  txt:= TStringList.Create;
-  txt.LoadFromFile(Self.OpenDialog1.FileName);
-
+  s:=System.IOUtils.TFile.ReadAllText(Self.OpenDialog1.FileName);
   AllocConsole;
   writeln('Uncompressed text:');
-  for i := 0 to txt.Count-1 do
-  begin
-    writeln(txt[i]);
-  end;
+  writeln(s);
 
   writeln;
   printFileInfo(Self.OpenDialog1.FileName);
@@ -588,15 +555,14 @@ begin
 
   if Self.CheckBoxRLE.Checked then
   begin
-    CompressionStart(txt,1);
+    CompressionStart(s,1);
   end;
 
   if Self.CheckBoxHUFF.Checked then
   begin
-    CompressionStart(txt,2);
+    CompressionStart(s,2);
   end;
 
-  txt.Free;
   //FreeConsole;
 end;
 
@@ -641,7 +607,7 @@ begin
 end;
 
 
-procedure decompressRLE(txt:TText;newPath:String);
+procedure decompressRLE(s,newPath:String);
 var
   F:TFile;
   i:integer;
@@ -649,18 +615,7 @@ begin
   AssignFile(F,newPath);
   Rewrite(F);
 
-  if txt.Count>1 then
-  begin
-    for i:=0 to txt.Count-2 do
-    begin
-      writeln(F,decompressRLEString(txt[i]));
-    end;
-    write(F,decompressRLEString(txt[i]));
-  end else
-        if txt.Count=1 then
-        begin
-        write(F,decompressRLEString(txt[0]));
-        end;
+  write(F,decompressRLEString(s));
 
 
   CloseFile(F);
@@ -679,16 +634,164 @@ begin
 end;
 
 
-procedure decompressHFM(txt:TText;newPath:String);
+function IntToBin7(d: Integer): string;
+var
+  x, p: Integer;
+  bin: string;
+begin
+  bin := '';
+  for x := 1 to 7 do
+  begin
+    if Odd(d) then
+    begin
+      bin := '1' + bin
+    end else
+        begin
+          bin := '0' + bin;
+        end;
+    d := d shr 1;
+  end;
+  Delete(bin, 1, 8 * ((Pos('1', bin) - 1) div 8));
+  Result := bin;
+end;
+
+
+function HUFFCharToStringBinary(s:string):String;
+var
+  buff:String;
+  i,z:integer;
+begin
+  buff:='';
+  for i:=1 to length(s)-1 do
+  begin
+    buff:=buff+IntToBin7(ord(s[i]));
+  end;
+  z:=StrToInt(s[length(s)]);
+  delete(buff,length(buff)-6,z);
+  HUFFCharToStringBinary:=buff;
+end;
+
+
+function getSymbolFromHuffTree(head:HuffTreePointer; buffSequence:string):Integer;
+var
+  code,i:integer;
+  element:HuffTreePointer;
+begin
+  code:=-1;
+  element:=head;
+  case StrToInt(buffSequence[1]) of
+    0:
+      begin
+        for i:=1 to length(buffSequence)-1 do
+        begin
+          element:=element.left;
+        end;
+
+        if buffSequence[length(buffSequence)]='1' then
+        begin
+          code:=element.right.symbol;
+        end else
+            begin
+              code:=element.left.symbol;
+            end;
+      end;
+    1:
+      begin
+        for i:=1 to length(buffSequence)-1 do
+        begin
+          element:=element.right;
+        end;
+
+        if buffSequence[length(buffSequence)]='1' then
+        begin
+          code:=element.right.symbol;
+        end else
+            begin
+              code:=element.left.symbol;
+            end;
+      end;
+  end;
+
+  getSymbolFromHuffTree:=code;
+end;
+
+function decodeHuffString(head:HuffTreePointer; s:string):String;
+var
+  buff, buffSequence:string;
+  z:integer;
+begin
+  buff:='';
+  buffSequence:='';
+  while length(s)>0 do
+  begin
+    buffSequence:=buffSequence+s[1];
+    delete(s,1,1);
+
+    z:=getSymbolFromHuffTree(head, buffSequence);
+    if z<>-1 then
+    begin
+      buff:=buff+Chr(z);
+      buffSequence:='';
+    end;
+
+
+  end;
+
+  decodeHuffString:=buff;
+end;
+
+
+procedure decompressHFM(s:string;newPath:String);
 var
   F:TFile;
-  i:integer;
+  i,n,p:integer;
+  arr:THuffArray;
+  head:HUFFTreePointer;
+  buff:String;
 begin
+  if (length(s)>2)  and (pos(#27#27,s)<>0) then
+  begin
+    buff:='';
+    p:=pos(#27#27,s);
+    if pos(#27#27#27,s)=p then
+    begin
+      p:=p+1;
+    end;
+
+    for i:=1 to p-1 do
+    begin
+      buff:=buff+s[i];
+    end;
+
+    setLength(arr,p-1);
+    HUFFGetCount(arr,buff);
+
+    HUFFCreateTree(head,arr);
+    OutputTree(head);
+
+
+    delete(s,1,p+1);
+    s:=HUFFCharToStringBinary(s);
+    s:=decodeHuffString(head,s);
+
+  end else
+      begin
+        s:='';
+      end;
+  Finalize(buff);
+
   AssignFile(F,newPath);
   Rewrite(F);
+  write(F,s);
 
 
   CloseFile(F);
+
+  //----Clear-Tree!!!-----
+  //----Clear-Tree!!!-----
+  //----Clear-Tree!!!-----
+  //----Clear-Tree!!!-----
+  //----Clear-Tree!!!-----
 end;
 //-----------------
 
@@ -697,14 +800,12 @@ end;
 procedure StartDecompression(path:String;z:integer);
 var
   i,p: Integer;
-  txt:TText;
+  s:string;
   newPath,newName: String;
 begin
   AllocConsole;
-
   Form1.Memo1.Clear;
-  txt:= TStringList.Create;
-  txt.LoadFromFile(path);
+
 
   newPath:=ExtractFilePath(path);
   newName:=ExtractFileName(path);
@@ -720,12 +821,14 @@ begin
   case z of
     1:
       begin
-        decompressRLE(txt,newPath);
+        s:=System.IOUtils.TFile.ReadAllText(path);
+        decompressRLE(s,newPath);
         write('RLE ');
       end;
     2:
       begin
-        decompressHFM(txt,newPath);
+        s:=System.IOUtils.TFile.ReadAllText(path);
+        decompressHFM(s,newPath);
         write('Huffman ');
       end;
     3:
@@ -734,15 +837,10 @@ begin
       end;
   end;
 
-  txt.clear;
-  txt.LoadFromFile(newPath);
-  Form1.Memo1.Lines:=txt;
-
+  s:=System.IOUtils.TFile.ReadAllText(newPath);
   writeln('Decompression Result:');
-  for i := 0 to txt.Count-1 do
-  begin
-    writeln(txt[i]);
-  end;
+  writeln(s);
+  Form1.Memo1.Text:=s;
 
 
   writeln;
@@ -755,7 +853,6 @@ begin
     DeleteFile(newPath);
   end;
 
-  txt.Free;
 end;
 
 
