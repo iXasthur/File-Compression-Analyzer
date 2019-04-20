@@ -429,7 +429,7 @@ begin
   begin
     encodedStr:=encodedStr+HUFFGetBSymbol(head, s[i]);
   end;
-  writeln(encodedStr);
+  //writeln(encodedStr);
 
   encodedStr:=HUFFStringBinaryToChar(encodedStr);
 
@@ -450,7 +450,7 @@ begin
   HUFFSort(arr);
 
   HUFFCreateTree(treeHead,arr);
-  OutputTree(treeHead);
+  //OutputTree(treeHead);
   s:=HUFFCompressString(treeHead, s);
 
   AssignFile(F,newPath);
@@ -767,7 +767,7 @@ begin
     HUFFGetCount(arr,buff);
 
     HUFFCreateTree(head,arr);
-    OutputTree(head);
+    //OutputTree(head);
 
 
     delete(s,1,p+1);
