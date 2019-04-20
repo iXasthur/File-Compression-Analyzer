@@ -106,13 +106,13 @@ begin
       s:=0;
       buffChar:=str[1];
 
-      while (length(str)>=1) and (str[1]=buffChar) and (s<>9) do
+      while (length(str)>=1) and (str[1]=buffChar) and (s<>127) do
       begin
         s:=s+1;
         delete(str,1,1);
       end;
-
-      buffStr:=buffStr+IntToStr(s);
+//      writeln(s:3,buffChar:2);
+      buffStr:=buffStr+Chr(s);
       buffStr:=buffStr+buffChar;
     end;
   end else
@@ -590,7 +590,7 @@ begin
   begin
     while length(str)>=2 do
     begin
-      buffCount:=StrToInt(str[1]);
+      buffCount:=Ord(str[1]);
       buffChar:=str[2];
       for i:=1 to buffCount do
       begin
@@ -601,7 +601,7 @@ begin
   end else
         if length(str)=2 then
         begin
-          buffCount:=StrToInt(str[1]);
+          buffCount:=Ord(str[1]);
           buffChar:=str[2];
           for i:=1 to buffCount do
           begin
