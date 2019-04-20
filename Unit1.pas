@@ -57,7 +57,8 @@ type
 
 
 
-
+const
+  outputFiles = false;
 
 
 
@@ -527,7 +528,11 @@ begin
 
   s:=System.IOUtils.TFile.ReadAllText(newPath);
   writeln('Compression Result:');
-  writeln(s);
+  if outputFiles then
+  begin
+    writeln(s);
+  end;
+
 
 
 
@@ -546,7 +551,10 @@ begin
   s:=System.IOUtils.TFile.ReadAllText(Self.OpenDialog1.FileName);
   AllocConsole;
   writeln('Uncompressed text:');
-  writeln(s);
+  if outputFiles then
+  begin
+    writeln(s);
+  end;
 
   writeln;
   printFileInfo(Self.OpenDialog1.FileName);
@@ -626,14 +634,6 @@ end;
 
 
 //-----HUFFMAN-----
-function decompressHFMString(str:String):String;
-var
-  i: Integer;
-begin
-
-end;
-
-
 function IntToBin7(d: Integer): string;
 var
   x, p: Integer;
@@ -839,7 +839,10 @@ begin
 
   s:=System.IOUtils.TFile.ReadAllText(newPath);
   writeln('Decompression Result:');
-  writeln(s);
+  if outputFiles then
+  begin
+    writeln(s);
+  end;
   Form1.Memo1.Text:=s;
 
 
