@@ -445,7 +445,7 @@ var
   arr: THuffArray;
   treeHead: HuffTreePointer;
 begin
-  SetLength(arr,255);
+  SetLength(arr,1024);
   n:=HUFFGetCount(arr,s);
   SetLength(arr,n);
   HUFFSort(arr);
