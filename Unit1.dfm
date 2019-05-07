@@ -344,9 +344,7 @@ object Form1: TForm1
       Height = 53
       Align = alClient
       Caption = 'Deflate'
-      Checked = True
       Enabled = False
-      State = cbChecked
       TabOrder = 6
       ExplicitLeft = 344
       ExplicitTop = 256
