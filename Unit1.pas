@@ -26,6 +26,7 @@ type
     right: HUFFTreePointer;
   end;
 
+  TLZ78Array = Array of String;
 
 type
   TForm1 = class(TForm)
@@ -40,9 +41,10 @@ type
     CompressionButton: TSpeedButton;
     CheckBoxRLE: TCheckBox;
     CheckBoxHUFF: TCheckBox;
-    CheckBox3: TCheckBox;
+    CheckBoxA: TCheckBox;
     DecompressionButton: TSpeedButton;
     CheckBoxExport: TCheckBox;
+    CheckBoxLZ78: TCheckBox;
     procedure OpenButtonClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure Label1Click(Sender: TObject);
@@ -86,7 +88,7 @@ begin
   writeln('Path       = '+ExtractFilePath  (n));
   writeln('Name       = '+ExtractFileName  (n));
   writeln('Extention  = '+ExtractFileExt   (n));
-  writeln('Size       = '+IntToStr(GetFileSize(n)));
+  writeln('Size       = '+IntToStr(GetFileSize(n)),' bytes');
 end;
 
 
@@ -480,6 +482,18 @@ end;
 //-----------------
 
 
+procedure LZ78Compress(s:String; newPath:String);
+var
+  F: TFile;
+begin
+
+
+
+  AssignFile(F,newPath);
+  Rewrite(F);
+  write(F,s);
+  CloseFile(F);
+end;
 
 
 
@@ -521,7 +535,11 @@ begin
       end;
     3:
       begin
+        newName:=newName+'.xlz78';
+        newPath:=newPath+newName;
 
+        LZ78Compress(s,newPath);
+        write('LZ78 ');
       end;
   end;
 
@@ -569,6 +587,11 @@ begin
   if Self.CheckBoxHUFF.Checked then
   begin
     CompressionStart(s,2);
+  end;
+
+  if Self.CheckBoxLZ78.Checked then
+  begin
+    CompressionStart(s,3);
   end;
 
   //FreeConsole;
@@ -783,8 +806,6 @@ begin
   AssignFile(F,newPath);
   Rewrite(F);
   write(F,s);
-
-
   CloseFile(F);
 
   //----Clear-Tree!!!-----
@@ -795,6 +816,20 @@ begin
 end;
 //-----------------
 
+//------LZ78-------
+procedure decompressLZ78(s:string;newPath:String);
+var
+  F:TFile;
+begin
+
+
+
+  AssignFile(F,newPath);
+  Rewrite(F);
+  write(F,s);
+  CloseFile(F);
+end;
+//-----------------
 
 
 procedure StartDecompression(path:String;z:integer);
@@ -814,26 +849,38 @@ begin
   begin
     Delete(newName,p,length(ExtractFileExt(path)));
   end;
-  newName:='D_' + newName;
-  newName:=newName+'.txt';
-  newPath:=newPath+newName;
+
 
   case z of
     1:
       begin
+        newName:='RLE_' + newName;
+        newName:=newName+'.txt';
+        newPath:=newPath+newName;
+
         s:=System.IOUtils.TFile.ReadAllText(path);
         decompressRLE(s,newPath);
         write('RLE ');
       end;
     2:
       begin
+        newName:='HFM_' + newName;
+        newName:=newName+'.txt';
+        newPath:=newPath+newName;
+
         s:=System.IOUtils.TFile.ReadAllText(path);
         decompressHFM(s,newPath);
         write('Huffman ');
       end;
     3:
       begin
+        newName:='LZ78_' + newName;
+        newName:=newName+'.txt';
+        newPath:=newPath+newName;
 
+        s:=System.IOUtils.TFile.ReadAllText(path);
+        decompressLZ78(s,newPath);
+        write('LZ78 ');
       end;
   end;
 
@@ -870,7 +917,11 @@ begin
           if ExtractFileExt(Form1.OpenDialog1.FileName)='.xhfm' then
           begin
             StartDecompression(Self.OpenDialog1.FileName,2);
-          end;
+          end else
+                if ExtractFileExt(Form1.OpenDialog1.FileName)='.xlz78' then
+                begin
+                  StartDecompression(Self.OpenDialog1.FileName,3);
+                end;
   end
 
 end;
@@ -902,7 +953,9 @@ begin
 
   Self.CheckBoxRLE.Enabled:=False;
   Self.CheckBoxHUFF.Enabled:=False;
-  Self.CheckBox3.Enabled:=False;
+  Self.CheckBoxLZ78.Enabled:=False;
+
+  Self.CheckBoxA.Enabled:=False;
   Self.CheckBoxExport.Enabled:=False;
 
   Self.CompressionButton.Enabled:=False;
@@ -932,7 +985,11 @@ begin
           if ExtractFileExt(Self.OpenDialog1.FileName)='.xhfm' then
           begin
             s:=2;
-          end;
+          end else
+                if ExtractFileExt(Self.OpenDialog1.FileName)='.xlz78' then
+                begin
+                  s:=3;
+                end;
 
 
     case s of
@@ -945,7 +1002,9 @@ begin
 
         Self.CheckBoxRLE.Enabled:=False;
         Self.CheckBoxHUFF.Enabled:=False;
-        Self.CheckBox3.Enabled:=False;
+        Self.CheckBoxLZ78.Enabled:=False;
+
+        Self.CheckBoxA.Enabled:=False;
         Self.CheckBoxExport.Enabled:=True;
       end;
     2:
@@ -957,7 +1016,23 @@ begin
 
         Self.CheckBoxRLE.Enabled:=False;
         Self.CheckBoxHUFF.Enabled:=False;
-        Self.CheckBox3.Enabled:=False;
+        Self.CheckBoxLZ78.Enabled:=False;
+
+        Self.CheckBoxA.Enabled:=False;
+        Self.CheckBoxExport.Enabled:=True;
+      end;
+    3:
+      begin
+        Self.DecompressionButton.Enabled:=True;
+        Self.DecompressionButton.Caption:='Decompress(LZ78)';
+
+        Self.CompressionButton.Enabled:=False;
+
+        Self.CheckBoxRLE.Enabled:=False;
+        Self.CheckBoxHUFF.Enabled:=False;
+        Self.CheckBoxLZ78.Enabled:=False;
+
+        Self.CheckBoxA.Enabled:=False;
         Self.CheckBoxExport.Enabled:=True;
       end;
     else
@@ -969,7 +1044,9 @@ begin
 
         Self.CheckBoxRLE.Enabled:=True;
         Self.CheckBoxHUFF.Enabled:=True;
-        Self.CheckBox3.Enabled:=True;
+        Self.CheckBoxLZ78.Enabled:=True;
+
+        Self.CheckBoxA.Enabled:=True;
         Self.CheckBoxExport.Enabled:=False;
       end;
     end;

@@ -126,7 +126,7 @@ object Form1: TForm1
       item
         Column = 4
         ColumnSpan = 4
-        Control = CheckBox3
+        Control = CheckBoxA
         Row = 5
       end
       item
@@ -140,6 +140,12 @@ object Form1: TForm1
         ColumnSpan = 2
         Control = CheckBoxExport
         Row = 7
+      end
+      item
+        Column = 1
+        ColumnSpan = 3
+        Control = CheckBoxLZ78
+        Row = 6
       end>
     ParentBackground = False
     RowCollection = <
@@ -273,11 +279,9 @@ object Form1: TForm1
       Height = 53
       Align = alClient
       Caption = 'Huffman'
-      Checked = True
-      State = cbChecked
       TabOrder = 2
     end
-    object CheckBox3: TCheckBox
+    object CheckBoxA: TCheckBox
       AlignWithMargins = True
       Left = 322
       Top = 269
@@ -317,9 +321,21 @@ object Form1: TForm1
       Caption = 'Export as .txt'
       TabOrder = 4
     end
+    object CheckBoxLZ78: TCheckBox
+      Left = 79
+      Top = 319
+      Width = 233
+      Height = 53
+      Align = alClient
+      Caption = 'LZ78'
+      Checked = True
+      Enabled = False
+      State = cbChecked
+      TabOrder = 5
+    end
   end
   object OpenDialog1: TOpenDialog
-    Filter = 'Text|*.txt|Compressed File|*.xrle;*.xhfm|Any File|*'
+    Filter = 'Text|*.txt|Compressed File|*.xrle;*.xhfm;*.xlz78|Any File|*'
     Left = 584
     Top = 440
   end
