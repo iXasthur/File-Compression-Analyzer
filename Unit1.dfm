@@ -144,7 +144,7 @@ object Form1: TForm1
       item
         Column = 1
         ColumnSpan = 3
-        Control = CheckBoxLZ78
+        Control = CheckBoxLZ77
         Row = 6
       end>
     ParentBackground = False
@@ -321,13 +321,13 @@ object Form1: TForm1
       Caption = 'Export as .txt'
       TabOrder = 4
     end
-    object CheckBoxLZ78: TCheckBox
+    object CheckBoxLZ77: TCheckBox
       Left = 79
       Top = 319
       Width = 233
       Height = 53
       Align = alClient
-      Caption = 'LZ78'
+      Caption = 'LZ77'
       Checked = True
       Enabled = False
       State = cbChecked
