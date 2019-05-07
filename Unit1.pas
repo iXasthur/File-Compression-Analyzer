@@ -510,7 +510,13 @@ begin
     end;
 
     buff127:=buff127+sequence;
-    buff:=buff+IntToStr(q1)+IntToStr(q2)+sequence[length(sequence)];
+    if length(buff127)>127 then
+    begin
+      delete(buff127,1,length(buff127)-127);
+    end;
+
+    buff:=buff+Chr(q1)+Chr(q2)+sequence[length(sequence)];
+//    buff:=buff+IntToStr(q1)+'/'+IntToStr(q2)+'/'+sequence[length(sequence)]+' ';
     delete(s,1,length(sequence));
   end;
 
