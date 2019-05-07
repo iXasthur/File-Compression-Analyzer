@@ -962,7 +962,6 @@ begin
   DeleteFile(tmpPath);
   DecompressLZ77(s,newPath);
 
-
 end;
 //-----------------
 
