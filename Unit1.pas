@@ -481,19 +481,35 @@ begin
 end;
 //-----------------
 
+//-------LZ78-----
+function LZ78CompressString(s:String):String;
+var
+  i,dictMaxL:integer;
+  arr: TLZ78Array;
+  buff:String;
+begin
+  buff:='';
+  dictMaxL:=127;
+  setLength(arr,dictMaxL);
+
+
+
+  LZ78CompressString:=buff;
+end;
 
 procedure LZ78Compress(s:String; newPath:String);
 var
   F: TFile;
 begin
 
-
+  s:=LZ78CompressString(s);
 
   AssignFile(F,newPath);
   Rewrite(F);
   write(F,s);
   CloseFile(F);
 end;
+//-----------------
 
 
 
