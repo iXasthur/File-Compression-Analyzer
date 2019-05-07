@@ -146,6 +146,12 @@ object Form1: TForm1
         ColumnSpan = 3
         Control = CheckBoxLZ77
         Row = 6
+      end
+      item
+        Column = 1
+        ColumnSpan = 3
+        Control = CheckBoxDeflate
+        Row = 7
       end>
     ParentBackground = False
     RowCollection = <
@@ -328,14 +334,30 @@ object Form1: TForm1
       Height = 53
       Align = alClient
       Caption = 'LZ77'
+      Enabled = False
+      TabOrder = 5
+    end
+    object CheckBoxDeflate: TCheckBox
+      Left = 79
+      Top = 372
+      Width = 233
+      Height = 53
+      Align = alClient
+      Caption = 'Deflate'
       Checked = True
       Enabled = False
       State = cbChecked
-      TabOrder = 5
+      TabOrder = 6
+      ExplicitLeft = 344
+      ExplicitTop = 256
+      ExplicitWidth = 97
+      ExplicitHeight = 17
     end
   end
   object OpenDialog1: TOpenDialog
-    Filter = 'Text|*.txt|Compressed File|*.xrle;*.xhfm;*.xlz77|Any File|*'
+    Filter = 
+      'Text|*.txt|Compressed File|*.xrle;*.xhfm;*.xlz77;*.xdfl|Any File' +
+      '|*'
     Left = 584
     Top = 440
   end

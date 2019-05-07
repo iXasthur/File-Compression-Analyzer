@@ -45,6 +45,7 @@ type
     DecompressionButton: TSpeedButton;
     CheckBoxExport: TCheckBox;
     CheckBoxLZ77: TCheckBox;
+    CheckBoxDeflate: TCheckBox;
     procedure OpenButtonClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure Label1Click(Sender: TObject);
@@ -405,7 +406,7 @@ begin
   end;
 //  writeln;
   {
-    Next part adds (lastLength) additional 0 to beginning of the next sequence
+    Next part adds (lastLength) additional 0 to the beginning of the next sequence
   }
   if (length(s)>0) and (length(s)<=7) then
   begin
@@ -542,27 +543,14 @@ end;
 
 
 //-----DEFLATE-----
-function DEFLATECompressString(s:String):String;
-var
-  i:integer;
-  buff:String;
+
+procedure DFLCompress(s:String; newPath:String);
 begin
-  buff:='';
-
-
-  DEFLATECompressString:=buff;
-end;
-
-procedure DEFLATECompress(s:String; newPath:String);
-var
-  F: TFile;
-begin
-  s:=DEFLATECompressString(s);
-
-  AssignFile(F,newPath);
-  Rewrite(F);
-  write(F,s);
-  CloseFile(F);
+  if Length(s)>=1 then
+  begin
+    s:=LZ77CompressString(s);    
+  end;
+  HUFFCompress(s,newPath);
 end;
 //-----------------
 
@@ -609,6 +597,14 @@ begin
         LZ77Compress(s,newPath);
         write('LZ77 ');
       end;
+    4:
+      begin
+        newName:=newName+'.xdfl';
+        newPath:=newPath+newName;
+
+        DFLCompress(s,newPath);
+        write('Deflate ');
+      end; 
   end;
 
 
@@ -660,6 +656,11 @@ begin
   if Self.CheckBoxLZ77.Checked then
   begin
     CompressionStart(s,3);
+  end;
+
+  if Self.CheckBoxDeflate.Checked then
+  begin
+    CompressionStart(s,4);
   end;
 
   //FreeConsole;
@@ -940,17 +941,28 @@ end;
 //-----------------
 
 //-----DEFLATE-----
-procedure decompressDEFLATE(s:string;newPath:String);
+procedure decompressDFL(s:string;newPath:String);
 var
-  F:TFile;
+  tmpPath,tmpName:String;
+  p:Integer;
 begin
+  tmpPath:=ExtractFilePath(newPath);
+  tmpName:=ExtractFileName(newPath);
+  p:=pos(ExtractFileExt(newPath),tmpName);
+  if p<>0 then
+  begin
+    Delete(tmpName,p,length(ExtractFileExt(newPath)));
+  end;
+  tmpName:='TMP-'+tmpName+IntToStr(Random(999)+1);
+  tmpPath:=tmpPath+tmpName;
+  
+
+  DecompressHFM(s,tmpPath);
+  s:=System.IOUtils.TFile.ReadAllText(tmpPath);
+  DeleteFile(tmpPath);
+  DecompressLZ77(s,newPath);
 
 
-
-  AssignFile(F,newPath);
-  Rewrite(F);
-  write(F,s);
-  CloseFile(F);
 end;
 //-----------------
 
@@ -1005,6 +1017,16 @@ begin
         decompressLZ77(s,newPath);
         write('LZ77 ');
       end;
+    4:
+      begin
+        newName:='DFL_' + newName;
+        newName:=newName+'.txt';
+        newPath:=newPath+newName;
+
+        s:=System.IOUtils.TFile.ReadAllText(path);
+        decompressDFL(s,newPath);
+        write('Deflate ');
+      end; 
   end;
 
   s:=System.IOUtils.TFile.ReadAllText(newPath);
@@ -1044,7 +1066,11 @@ begin
                 if ExtractFileExt(Form1.OpenDialog1.FileName)='.xlz77' then
                 begin
                   StartDecompression(Self.OpenDialog1.FileName,3);
-                end;
+                end else
+                      if ExtractFileExt(Form1.OpenDialog1.FileName)='.xdfl' then
+                      begin
+                        StartDecompression(Self.OpenDialog1.FileName,4);
+                      end;
   end
 
 end;
@@ -1112,7 +1138,11 @@ begin
                 if ExtractFileExt(Self.OpenDialog1.FileName)='.xlz77' then
                 begin
                   s:=3;
-                end;
+                end else
+                      if ExtractFileExt(Self.OpenDialog1.FileName)='.xdfl' then
+                      begin
+                        s:=4;
+                      end;
 
 
     case s of
@@ -1126,6 +1156,7 @@ begin
         Self.CheckBoxRLE.Enabled:=False;
         Self.CheckBoxHUFF.Enabled:=False;
         Self.CheckBoxLZ77.Enabled:=False;
+        Self.CheckBoxDeflate.Enabled:=False;
 
         Self.CheckBoxA.Enabled:=False;
         Self.CheckBoxExport.Enabled:=True;
@@ -1140,6 +1171,7 @@ begin
         Self.CheckBoxRLE.Enabled:=False;
         Self.CheckBoxHUFF.Enabled:=False;
         Self.CheckBoxLZ77.Enabled:=False;
+        Self.CheckBoxDeflate.Enabled:=False;
 
         Self.CheckBoxA.Enabled:=False;
         Self.CheckBoxExport.Enabled:=True;
@@ -1154,10 +1186,26 @@ begin
         Self.CheckBoxRLE.Enabled:=False;
         Self.CheckBoxHUFF.Enabled:=False;
         Self.CheckBoxLZ77.Enabled:=False;
+        Self.CheckBoxDeflate.Enabled:=False;
 
         Self.CheckBoxA.Enabled:=False;
         Self.CheckBoxExport.Enabled:=True;
       end;
+    4:
+      begin
+        Self.DecompressionButton.Enabled:=True;
+        Self.DecompressionButton.Caption:='Decompress(Deflate)';
+
+        Self.CompressionButton.Enabled:=False;
+
+        Self.CheckBoxRLE.Enabled:=False;
+        Self.CheckBoxHUFF.Enabled:=False;
+        Self.CheckBoxLZ77.Enabled:=False;
+        Self.CheckBoxDeflate.Enabled:=False;
+
+        Self.CheckBoxA.Enabled:=False;
+        Self.CheckBoxExport.Enabled:=True;
+      end;  
     else
       begin
         Self.DecompressionButton.Enabled:=False;
@@ -1168,6 +1216,7 @@ begin
         Self.CheckBoxRLE.Enabled:=True;
         Self.CheckBoxHUFF.Enabled:=True;
         Self.CheckBoxLZ77.Enabled:=True;
+        Self.CheckBoxDeflate.Enabled:=True;
 
         Self.CheckBoxA.Enabled:=True;
         Self.CheckBoxExport.Enabled:=False;
