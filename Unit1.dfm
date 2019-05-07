@@ -335,7 +335,7 @@ object Form1: TForm1
     end
   end
   object OpenDialog1: TOpenDialog
-    Filter = 'Text|*.txt|Compressed File|*.xrle;*.xhfm;*.xlz78|Any File|*'
+    Filter = 'Text|*.txt|Compressed File|*.xrle;*.xhfm;*.xlz77|Any File|*'
     Left = 584
     Top = 440
   end

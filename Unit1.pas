@@ -885,12 +885,52 @@ end;
 //-----------------
 
 //------LZ77-------
+function decompressLZ77String(s:string):String;
+var
+  q1,q2,i,x,offset:Integer;
+  q3:Char;
+  buff,sequence:String;
+begin
+  buff:='';
+  i:=1;
+
+  while i<=(length(s)-2) do
+  begin
+    q1:=ord(s[i]);
+    q2:=ord(s[i+1]);
+    q3:=s[i+2];
+
+    if (q1>0) and (q2>0) then
+    begin
+      sequence:='';
+
+      for x:=1 to q2 do
+      begin
+        offset:=length(buff)-q1+x;
+        sequence:=sequence+buff[offset];
+      end;
+      
+      buff:=buff+sequence;  
+    end;
+
+    buff:=buff+q3;
+    i:=i+3;
+  end;
+
+
+
+  decompressLZ77String:=buff;
+end;
+
 procedure decompressLZ77(s:string;newPath:String);
 var
   F:TFile;
 begin
 
-
+  if length(s)>=3 then
+  begin
+    s:=decompressLZ77String(s);
+  end;
 
   AssignFile(F,newPath);
   Rewrite(F);
