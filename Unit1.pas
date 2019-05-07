@@ -483,11 +483,36 @@ end;
 //-------LZ77-----
 function LZ77CompressString(s:String):String;
 var
-  i,L:integer;
-  buff:String;
+  i,p,q1,q2,q3,sequenceSize:integer;
+  buff,buff127,sequence:String;
 begin
   buff:='';
-  L:=0;
+  buff127:='';
+  sequence:='';
+
+
+
+
+  while length(s)>0 do
+  begin
+    q1:=0;
+    q2:=0;
+    sequence:='';
+
+    sequence:=sequence+s[1];
+    i:=2;
+    while (pos(sequence,buff127)>0) and (i<=length(s)) do
+    begin
+      q1:=length(buff127)-pos(sequence,buff127)+1;
+      q2:=length(sequence);
+      sequence:=sequence+s[i];
+      inc(i);
+    end;
+
+    buff127:=buff127+sequence;
+    buff:=buff+IntToStr(q1)+IntToStr(q2)+sequence[length(sequence)];
+    delete(s,1,length(sequence));
+  end;
 
 
   LZ77CompressString:=buff;
@@ -497,8 +522,10 @@ procedure LZ77Compress(s:String; newPath:String);
 var
   F: TFile;
 begin
-
-  s:=LZ77CompressString(s);
+  if Length(s)>=1 then
+  begin
+    s:=LZ77CompressString(s);
+  end;
 
   AssignFile(F,newPath);
   Rewrite(F);
