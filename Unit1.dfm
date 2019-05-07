@@ -346,10 +346,6 @@ object Form1: TForm1
       Caption = 'Deflate'
       Enabled = False
       TabOrder = 6
-      ExplicitLeft = 344
-      ExplicitTop = 256
-      ExplicitWidth = 97
-      ExplicitHeight = 17
     end
   end
   object OpenDialog1: TOpenDialog
