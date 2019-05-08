@@ -55,6 +55,9 @@ begin
 end;
 
 
+
+
+//------MAIN------
 procedure TForm2.FormCreate(Sender: TObject);
 begin
   Self.DoubleBuffered:=True;
