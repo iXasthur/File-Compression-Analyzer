@@ -1,11 +1,11 @@
-unit Unit1;
+unit MainForm;
 
 interface
 
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.ExtCtrls, Vcl.Menus,
-  System.ImageList, Vcl.ImgList, Vcl.Buttons, Math, System.IOUtils;
+  System.ImageList, Vcl.ImgList, Vcl.Buttons, Math, System.IOUtils, System.Diagnostics, ChartForm;
 
 
 const
@@ -663,6 +663,17 @@ begin
     CompressionStart(s,4);
   end;
 
+
+  if Self.CheckBoxA.Checked then
+  begin
+    if chForm.Showing=false then
+    begin
+      chForm.Show;
+    end else
+        begin
+          chForm.Refresh;
+        end;
+  end;
   //FreeConsole;
 end;
 
@@ -1108,7 +1119,6 @@ begin
 
   Self.CompressionButton.Enabled:=False;
   Self.DecompressionButton.Enabled:=False;
-
 end;
 
 procedure TForm1.OpenButtonClick(Sender: TObject);
@@ -1235,6 +1245,7 @@ begin
         Self.Label1.Caption:='(c)Mikhail Kavaleuski '
       end;
 
+  chForm.Show;
 end;
 
 

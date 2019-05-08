@@ -334,7 +334,9 @@ object Form1: TForm1
       Height = 53
       Align = alClient
       Caption = 'LZ77'
+      Checked = True
       Enabled = False
+      State = cbChecked
       TabOrder = 5
     end
     object CheckBoxDeflate: TCheckBox
