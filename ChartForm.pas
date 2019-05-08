@@ -33,12 +33,26 @@ implementation
 {$R *.dfm}
 
 procedure drawAxises(I:TImage);
+var
+  p:Array of TPoint;
 begin
+  setLength(p,3);
+
   with I do
   begin
-    Canvas.MoveTo(clientWidth div 10,clientHeight div 10);
-    Canvas.LineTo(Canvas.PenPos.X,clientHeight - Canvas.PenPos.Y);
-    Canvas.LineTo(clientWidth - Canvas.PenPos.X,Canvas.PenPos.Y);
+    Canvas.Brush.Color:=Canvas.Pen.Color;
+    Canvas.MoveTo(width div 10,height div 20);
+    p[0]:=point(Canvas.PenPos.X,Canvas.PenPos.Y);
+    p[1]:=point(Canvas.PenPos.X + 5,Canvas.PenPos.Y + 15);
+    p[2]:=point(Canvas.PenPos.X - 5,Canvas.PenPos.Y + 15);
+    Canvas.Polygon(p);
+    Canvas.LineTo(Canvas.PenPos.X,height - Canvas.PenPos.Y);
+    Canvas.LineTo(width - Canvas.PenPos.X,Canvas.PenPos.Y);
+
+    p[0]:=point(Canvas.PenPos.X,Canvas.PenPos.Y);
+    p[1]:=point(Canvas.PenPos.X - 15,Canvas.PenPos.Y - 5);
+    p[2]:=point(Canvas.PenPos.X - 15,Canvas.PenPos.Y + 5);
+    Canvas.Polygon(p);
   end;
 end;
 

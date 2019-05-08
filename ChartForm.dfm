@@ -3,10 +3,10 @@ object Form2: TForm2
   Top = 0
   Caption = 'Graph'
   ClientHeight = 553
-  ClientWidth = 782
+  ClientWidth = 982
   Color = clWhite
   Constraints.MinHeight = 600
-  Constraints.MinWidth = 800
+  Constraints.MinWidth = 1000
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -13
@@ -22,7 +22,7 @@ object Form2: TForm2
   object Label1: TLabel
     Left = 0
     Top = 534
-    Width = 782
+    Width = 982
     Height = 19
     Align = alBottom
     Alignment = taRightJustify
@@ -41,7 +41,7 @@ object Form2: TForm2
   object GridPanel1: TGridPanel
     Left = 0
     Top = 0
-    Width = 782
+    Width = 982
     Height = 534
     Align = alClient
     Color = clWhite
@@ -135,11 +135,12 @@ object Form2: TForm2
       end>
     TabOrder = 0
     ExplicitTop = -6
+    ExplicitWidth = 782
     object SizeGraphImage: TImage
       AlignWithMargins = True
-      Left = 392
+      Left = 492
       Top = 57
-      Width = 386
+      Width = 486
       Height = 312
       Align = alClient
       ExplicitLeft = 336
@@ -151,7 +152,7 @@ object Form2: TForm2
       AlignWithMargins = True
       Left = 4
       Top = 57
-      Width = 382
+      Width = 482
       Height = 312
       Align = alClient
       ExplicitLeft = 336
@@ -162,7 +163,7 @@ object Form2: TForm2
     object SizeLabel: TLabel
       Left = 1
       Top = 38
-      Width = 78
+      Width = 98
       Height = 16
       Align = alBottom
       Alignment = taCenter
@@ -170,13 +171,14 @@ object Form2: TForm2
       ExplicitWidth = 44
     end
     object TimeLabel: TLabel
-      Left = 389
+      Left = 489
       Top = 38
-      Width = 78
+      Width = 98
       Height = 16
       Align = alBottom
       Alignment = taCenter
       Caption = 'Time, s'
+      ExplicitLeft = 389
       ExplicitWidth = 43
     end
   end
