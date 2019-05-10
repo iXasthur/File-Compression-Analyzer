@@ -45,6 +45,7 @@ type
     CheckBoxExport: TCheckBox;
     CheckBoxLZ77: TCheckBox;
     CheckBoxDeflate: TCheckBox;
+    DTimeLabel: TLabel;
     procedure OpenButtonClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure Label1Click(Sender: TObject);
@@ -1152,7 +1153,12 @@ end;
 
 
 procedure TForm1.DecompressionButtonClick(Sender: TObject);
+var
+  stopWatch: TStopWatch;
 begin
+  stopWatch.Create;
+  stopWatch.Reset;
+  stopWatch.Start;
   if (Self.OpenDialog1.FileName<>'') then
   begin
     if ExtractFileExt(Form1.OpenDialog1.FileName)='.xrle' then
@@ -1171,7 +1177,9 @@ begin
                       begin
                         StartDecompression(Self.OpenDialog1.FileName,4);
                       end;
-  end
+  end;
+  Self.DTimeLabel.Caption:='D.Time: '+IntToStr(stopWatch.ElapsedMilliseconds)+' ms';
+  stopWatch.Stop;
 
 end;
 
@@ -1209,6 +1217,8 @@ begin
 
   Self.CompressionButton.Enabled:=False;
   Self.DecompressionButton.Enabled:=False;
+
+  Self.DTimeLabel.Enabled:=False;
 end;
 
 procedure TForm1.OpenButtonClick(Sender: TObject);
@@ -1244,83 +1254,58 @@ begin
                       end;
 
 
-    case s of
-    1:
-      begin
-        Self.DecompressionButton.Enabled:=True;
-        Self.DecompressionButton.Caption:='Decompress(RLE)';
+    if s=0 then
+    begin
+      Self.DecompressionButton.Enabled:=False;
+      Self.DecompressionButton.Caption:='Decompress';
 
-        Self.CompressionButton.Enabled:=False;
+      Self.CompressionButton.Enabled:=True;
 
-        Self.CheckBoxRLE.Enabled:=False;
-        Self.CheckBoxHUFF.Enabled:=False;
-        Self.CheckBoxLZ77.Enabled:=False;
-        Self.CheckBoxDeflate.Enabled:=False;
+      Self.CheckBoxRLE.Enabled:=True;
+      Self.CheckBoxHUFF.Enabled:=True;
+      Self.CheckBoxLZ77.Enabled:=True;
+      Self.CheckBoxDeflate.Enabled:=True;
 
-        Self.CheckBoxA.Enabled:=False;
-        Self.CheckBoxExport.Enabled:=True;
-      end;
-    2:
-      begin
-        Self.DecompressionButton.Enabled:=True;
-        Self.DecompressionButton.Caption:='Decompress(Huffman)';
+      Self.CheckBoxA.Enabled:=True;
+      Self.CheckBoxExport.Enabled:=False;
 
-        Self.CompressionButton.Enabled:=False;
+      Self.DTimeLabel.Caption:='D.Time: 0 ms';
+      Self.DTimeLabel.Enabled:=False;
+    end else
+        begin
+          Self.DecompressionButton.Enabled:=True;
+          case s of
+          1:
+            begin
+              Self.DecompressionButton.Caption:='Decompress(RLE)';
+            end;
+          2:
+            begin
+              Self.DecompressionButton.Caption:='Decompress(Huffman)';
+            end;
+          3:
+            begin
+              Self.DecompressionButton.Caption:='Decompress(LZ77)';
+            end;
+          4:
+            begin
+              Self.DecompressionButton.Caption:='Decompress(Deflate)';
+            end;
+          end;
 
-        Self.CheckBoxRLE.Enabled:=False;
-        Self.CheckBoxHUFF.Enabled:=False;
-        Self.CheckBoxLZ77.Enabled:=False;
-        Self.CheckBoxDeflate.Enabled:=False;
+          Self.CompressionButton.Enabled:=False;
 
-        Self.CheckBoxA.Enabled:=False;
-        Self.CheckBoxExport.Enabled:=True;
-      end;
-    3:
-      begin
-        Self.DecompressionButton.Enabled:=True;
-        Self.DecompressionButton.Caption:='Decompress(LZ77)';
+          Self.CheckBoxRLE.Enabled:=False;
+          Self.CheckBoxHUFF.Enabled:=False;
+          Self.CheckBoxLZ77.Enabled:=False;
+          Self.CheckBoxDeflate.Enabled:=False;
 
-        Self.CompressionButton.Enabled:=False;
+          Self.CheckBoxA.Enabled:=False;
+          Self.CheckBoxExport.Enabled:=True;
 
-        Self.CheckBoxRLE.Enabled:=False;
-        Self.CheckBoxHUFF.Enabled:=False;
-        Self.CheckBoxLZ77.Enabled:=False;
-        Self.CheckBoxDeflate.Enabled:=False;
-
-        Self.CheckBoxA.Enabled:=False;
-        Self.CheckBoxExport.Enabled:=True;
-      end;
-    4:
-      begin
-        Self.DecompressionButton.Enabled:=True;
-        Self.DecompressionButton.Caption:='Decompress(Deflate)';
-
-        Self.CompressionButton.Enabled:=False;
-
-        Self.CheckBoxRLE.Enabled:=False;
-        Self.CheckBoxHUFF.Enabled:=False;
-        Self.CheckBoxLZ77.Enabled:=False;
-        Self.CheckBoxDeflate.Enabled:=False;
-
-        Self.CheckBoxA.Enabled:=False;
-        Self.CheckBoxExport.Enabled:=True;
-      end;  
-    else
-      begin
-        Self.DecompressionButton.Enabled:=False;
-        Self.DecompressionButton.Caption:='Decompress';
-
-        Self.CompressionButton.Enabled:=True;
-
-        Self.CheckBoxRLE.Enabled:=True;
-        Self.CheckBoxHUFF.Enabled:=True;
-        Self.CheckBoxLZ77.Enabled:=True;
-        Self.CheckBoxDeflate.Enabled:=True;
-
-        Self.CheckBoxA.Enabled:=True;
-        Self.CheckBoxExport.Enabled:=False;
-      end;
-    end;
+          Self.DTimeLabel.Caption:='D.Time: 0 ms';
+          Self.DTimeLabel.Enabled:=True;
+        end;
   end;
 end;
 

@@ -152,6 +152,12 @@ object Form1: TForm1
         ColumnSpan = 3
         Control = CheckBoxDeflate
         Row = 7
+      end
+      item
+        Column = 6
+        ColumnSpan = 3
+        Control = DTimeLabel
+        Row = 7
       end>
     ParentBackground = False
     RowCollection = <
@@ -186,6 +192,9 @@ object Form1: TForm1
         Value = 9.999999999999995000
       end>
     TabOrder = 0
+    DesignSize = (
+      782
+      534)
     object OpenButton: TSpeedButton
       Left = 79
       Top = 54
@@ -334,9 +343,7 @@ object Form1: TForm1
       Height = 53
       Align = alClient
       Caption = 'LZ77'
-      Checked = True
       Enabled = False
-      State = cbChecked
       TabOrder = 5
     end
     object CheckBoxDeflate: TCheckBox
@@ -348,6 +355,17 @@ object Form1: TForm1
       Caption = 'Deflate'
       Enabled = False
       TabOrder = 6
+    end
+    object DTimeLabel: TLabel
+      AlignWithMargins = True
+      Left = 501
+      Top = 385
+      Width = 110
+      Height = 26
+      Margins.Right = 55
+      Anchors = []
+      Caption = 'D.Time: 0 ms'
+      ExplicitLeft = 511
     end
   end
   object OpenDialog1: TOpenDialog
