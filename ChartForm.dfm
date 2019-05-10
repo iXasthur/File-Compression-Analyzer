@@ -80,14 +80,14 @@ object Form2: TForm2
       item
         Column = 5
         ColumnSpan = 5
-        Control = SizeGraphImage
+        Control = TimeGraphImage
         Row = 1
         RowSpan = 6
       end
       item
         Column = 0
         ColumnSpan = 5
-        Control = TimeGraphImage
+        Control = SizeGraphImage
         Row = 1
         RowSpan = 6
       end
@@ -134,7 +134,7 @@ object Form2: TForm2
         Value = 9.999999999999996000
       end>
     TabOrder = 0
-    object SizeGraphImage: TImage
+    object TimeGraphImage: TImage
       AlignWithMargins = True
       Left = 492
       Top = 57
@@ -146,7 +146,7 @@ object Form2: TForm2
       ExplicitWidth = 105
       ExplicitHeight = 105
     end
-    object TimeGraphImage: TImage
+    object SizeGraphImage: TImage
       AlignWithMargins = True
       Left = 4
       Top = 57
@@ -165,8 +165,8 @@ object Form2: TForm2
       Height = 16
       Align = alBottom
       Alignment = taCenter
-      Caption = 'Size, %'
-      ExplicitWidth = 44
+      Caption = 'Size, kb'
+      ExplicitWidth = 45
     end
     object TimeLabel: TLabel
       Left = 489
@@ -175,8 +175,7 @@ object Form2: TForm2
       Height = 16
       Align = alBottom
       Alignment = taCenter
-      Caption = 'Time, s'
-      ExplicitWidth = 43
+      Caption = 'Time, ms'
     end
   end
 end

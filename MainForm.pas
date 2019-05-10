@@ -1252,13 +1252,13 @@ begin
   TA[0].Name:='-';
   TA[0].Data:=0;
   SA[0].Name:='-';
-  SA[0].Data:=200;
+  SA[0].Data:=1024*50;
   for i := 1 to Length(TA)-1 do
   begin
     TA[i].Name:=IntToStr(i);
     TA[i].Data:=1000*i;
     SA[i].Name:=IntToStr(i);
-    SA[i].Data:=500*i;
+    SA[i].Data:=1024*5*i;
   end;
   ChartForm.LoadGraphData(TA,SA);
   ChartForm.chForm.Show;

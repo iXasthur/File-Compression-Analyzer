@@ -22,8 +22,8 @@ type
   TForm2 = class(TForm)
     GridPanel1: TGridPanel;
     Label1: TLabel;
-    SizeGraphImage: TImage;
     TimeGraphImage: TImage;
+    SizeGraphImage: TImage;
     SizeLabel: TLabel;
     TimeLabel: TLabel;
     procedure FormCreate(Sender: TObject);
@@ -71,7 +71,113 @@ begin
   end;
 end;
 
-procedure drawAxises(I:TImage);
+
+function calcY(I:TImage;offsetY,min,max:Integer;Element:TAlgRec):Integer;
+var
+  s,buff,yL,yPixelPos,yLengthData,yLengthPixels:Integer;
+  k:Real;
+begin
+  calcY:=I.Height - offsetY;
+  yL:=((I.Height - 2*offsetY) div (dashCount+1));
+  yPixelPos:=offsetY+yL;
+
+  if Element.Data=max then
+  begin
+    calcY:=yPixelPos;
+  end else
+        if Element.Data=min then
+        begin
+          calcY:=I.Height-yPixelPos;
+        end else
+            begin
+              yLengthData:=max-min;
+              yLengthPixels:=I.Height-2*(offsetY+yL);
+              k:=yLengthPixels/yLengthData;
+
+              yPixelPos:=max-Element.Data;
+              yPixelPos:=round(yPixelPos*k);
+
+              calcY:=yPixelPos+offsetY+yL;
+            end;
+
+
+
+end;
+
+procedure drawMinMax(I:TImage; offsetX,offsetY,min,max,T:Integer);
+var
+  yL,dy,s,textPos:Integer;
+begin
+  textPos:=offsetX+5;
+  yL:=(I.height - 2*offsetY) div (dashCount+1);
+  I.Canvas.MoveTo(textPos,offsetY);
+  I.Canvas.Brush.Color:=clWhite;
+
+  case T of
+    1:
+      begin
+        dy:=(max-min) div (dashCount-1);
+        for s := 0 to (dashCount-2) do
+        begin
+          I.Canvas.MoveTo(textPos,I.Canvas.PenPos.Y+yL);
+          I.Canvas.TextOut(I.Canvas.PenPos.X,I.Canvas.PenPos.Y,FloatToStrF((max-dy*s)/1024,ffGeneral,4,4));
+        end;
+        I.Canvas.MoveTo(textPos,I.Canvas.PenPos.Y+yL);
+        I.Canvas.TextOut(I.Canvas.PenPos.X,I.Canvas.PenPos.Y,FloatToStrF(min/1024,ffGeneral,4,4));
+      end;
+    2:
+      begin
+        dy:=(max-min) div (dashCount-1);
+        for s := 0 to (dashCount-2) do
+        begin
+          I.Canvas.MoveTo(textPos,I.Canvas.PenPos.Y+yL);
+          I.Canvas.TextOut(I.Canvas.PenPos.X,I.Canvas.PenPos.Y,IntToStr(max-dy*s));
+        end;
+        I.Canvas.MoveTo(textPos,I.Canvas.PenPos.Y+yL);
+        I.Canvas.TextOut(I.Canvas.PenPos.X,I.Canvas.PenPos.Y,IntToStr(min));
+      end;
+  end;
+end;
+
+procedure drawPillars(I:TImage; offsetX,offsetY:Integer; DataArr:TGraphDataArray;T:Integer);
+var
+  count, s, xL, min, max:Integer;
+begin
+  count:=Length(DataArr);
+  I.Canvas.Pen.Width:=10;
+  I.Canvas.MoveTo(offsetX,I.height - offsetY);
+  xL:=(I.Width - 2*offsetX) div (count+1);
+
+  min:=DataArr[0].Data;
+  max:=DataArr[0].Data;
+  for s := 1 to Length(DataArr)-1 do
+  begin
+    if DataArr[s].Data>max then
+    begin
+      max:=DataArr[s].Data;
+    end else
+          if DataArr[s].Data<min then
+          begin
+            min:=DataArr[s].Data;
+          end;
+  end;
+
+  drawMinMax(I,offsetX,offsetY,min,max,T);
+
+  I.Canvas.MoveTo(offsetX,I.height - offsetY);
+  with I do
+  begin
+    for s := 0 to (count-1) do
+    begin
+      Canvas.MoveTo(Canvas.PenPos.X+xL,I.height - offsetY);
+      Canvas.LineTo(Canvas.PenPos.X,calcY(I,offsetY,min,max,DataArr[s]));
+    end;
+  end;
+
+end;
+
+
+procedure drawAxises(I:TImage;DA:TGraphDataArray;T:Integer);
 var
   p:Array of TPoint;
   offsetX, offsetY:Integer;
@@ -98,34 +204,22 @@ begin
   end;
 
   drawDashes(I,offsetX,offsetY);
-end;
-
-procedure drawPillars(I:TImage;DataArr:TGraphDataArray;T:Integer);
-begin
-  case T of
-    1:
-      begin
-
-      end;
-    2:
-      begin
-
-      end;
+  if length(DA)>0 then
+  begin
+    drawPillars(I,offsetX,offsetY,DA,T);
   end;
 end;
 
 procedure drawSizeGraph(I:TImage;SA:TGraphDataArray);
 begin
   I.Picture:=nil;
-  drawAxises(I);
-  drawPillars(I,SA,1);
+  drawAxises(I,SA,1);
 end;
 
 procedure drawTimeGraph(I:TImage;TA:TGraphDataArray);
 begin
   I.Picture:=nil;
-  drawAxises(I);
-  drawPillars(I,TA,2);
+  drawAxises(I,TA,2);
 end;
 
 
@@ -163,8 +257,8 @@ end;
 
 procedure TForm2.FormPaint(Sender: TObject);
 begin
-  drawTimeGraph(Self.TimeGraphImage,TimeArrG);
   drawSizeGraph(Self.SizeGraphImage,SizeArrG);
+  drawTimeGraph(Self.TimeGraphImage,TimeArrG);
 end;
 
 procedure TForm2.FormResize(Sender: TObject);
