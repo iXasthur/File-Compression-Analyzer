@@ -35,7 +35,7 @@ object Form2: TForm2
     Font.Style = []
     ParentColor = False
     ParentFont = False
-    ExplicitLeft = 640
+    ExplicitLeft = 840
     ExplicitWidth = 142
   end
   object GridPanel1: TGridPanel
@@ -107,16 +107,16 @@ object Form2: TForm2
         Value = 10.000000000000010000
       end
       item
-        Value = 9.999999999999991000
+        Value = 9.999999999999988000
+      end
+      item
+        Value = 9.999999999999982000
       end
       item
         Value = 9.999999999999986000
       end
       item
-        Value = 9.999999999999989000
-      end
-      item
-        Value = 10.000000000000000000
+        Value = 9.999999999999996000
       end
       item
         Value = 10.000000000000010000
@@ -131,11 +131,9 @@ object Form2: TForm2
         Value = 10.000000000000010000
       end
       item
-        Value = 10.000000000000000000
+        Value = 9.999999999999996000
       end>
     TabOrder = 0
-    ExplicitTop = -6
-    ExplicitWidth = 782
     object SizeGraphImage: TImage
       AlignWithMargins = True
       Left = 492
@@ -178,7 +176,6 @@ object Form2: TForm2
       Align = alBottom
       Alignment = taCenter
       Caption = 'Time, s'
-      ExplicitLeft = 389
       ExplicitWidth = 43
     end
   end

@@ -7,6 +7,9 @@ uses
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.ExtCtrls, Vcl.WinXCtrls,
   Vcl.StdCtrls;
 
+const
+  dashCount = 7;
+
 type
   TForm2 = class(TForm)
     GridPanel1: TGridPanel;
@@ -32,16 +35,45 @@ implementation
 
 {$R *.dfm}
 
+procedure drawDashes(I:TImage;offsetX,offsetY:Integer);
+var
+  xL,yL,s: Integer;
+begin
+  xL:=(I.Width - 2*offsetX) div (dashCount+1);
+  yL:=(I.Height - 2*offsetY) div (dashCount+1);
+
+  with I do
+  begin
+    Canvas.MoveTo(offsetX+5,offsetY);
+    for s := 1 to dashCount do
+    begin
+      Canvas.MoveTo(Canvas.PenPos.X-10,Canvas.PenPos.Y+yL);
+      Canvas.LineTo(Canvas.PenPos.X+10,Canvas.PenPos.Y);
+    end;
+
+//    Canvas.MoveTo(Width - offsetX,Height - offsetY + 5);
+//    for s := 1 to dashCount do
+//    begin
+//      Canvas.MoveTo(Canvas.PenPos.X-xL,Canvas.PenPos.Y-10);
+//      Canvas.LineTo(Canvas.PenPos.X,Canvas.PenPos.Y+10);
+//    end;
+
+  end;
+end;
+
 procedure drawAxises(I:TImage);
 var
   p:Array of TPoint;
+  offsetX, offsetY:Integer;
 begin
   setLength(p,3);
+  offsetX:=I.width div 10;
+  offsetY:=I.height div 20;
 
   with I do
   begin
     Canvas.Brush.Color:=Canvas.Pen.Color;
-    Canvas.MoveTo(width div 10,height div 20);
+    Canvas.MoveTo(offsetX,offsetY);
     p[0]:=point(Canvas.PenPos.X,Canvas.PenPos.Y);
     p[1]:=point(Canvas.PenPos.X + 5,Canvas.PenPos.Y + 15);
     p[2]:=point(Canvas.PenPos.X - 5,Canvas.PenPos.Y + 15);
@@ -54,6 +86,8 @@ begin
     p[2]:=point(Canvas.PenPos.X - 15,Canvas.PenPos.Y + 5);
     Canvas.Polygon(p);
   end;
+
+  drawDashes(I,offsetX,offsetY);
 end;
 
 procedure drawSizeGraph(I:TImage);

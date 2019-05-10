@@ -186,7 +186,6 @@ object Form1: TForm1
         Value = 9.999999999999995000
       end>
     TabOrder = 0
-    ExplicitTop = -6
     object OpenButton: TSpeedButton
       Left = 79
       Top = 54
