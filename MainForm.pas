@@ -1315,7 +1315,14 @@ begin
     SA[i].Data:=1024*5*i;
   end;
   ChartForm.LoadGraphData(TA,SA);
-  ChartForm.chForm.Show;
+
+    if ChartForm.chForm.Showing=false then
+    begin
+      ChartForm.chForm.Show;
+    end else
+        begin
+          ChartForm.chForm.Refresh;
+        end;
 end;
 
 
