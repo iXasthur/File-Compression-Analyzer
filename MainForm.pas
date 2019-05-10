@@ -557,10 +557,9 @@ end;
 
 
 
-procedure CompressionStart(s:string;z:integer);
+procedure CompressionStart(s:string;z:integer;var newPath,newName:String);
 var
   i,p: Integer;
-  newPath,newName: String;
 begin
   newPath:=ExtractFilePath(Form1.OpenDialog1.FileName);
   newName:=ExtractFileName(Form1.OpenDialog1.FileName);
@@ -628,7 +627,19 @@ procedure TForm1.CompressionButtonClick(Sender: TObject);
 var
   s: String;
   i:integer;
+  newPath,newName: String;
+  stopWatch: TStopWatch;
+  TA,SA:ChartForm.TGraphDataArray;
 begin
+  stopWatch.Create;
+
+  SetLength(SA,1);
+  SetLength(TA,1);
+  SA[0].Name:='Uncomp.';
+  SA[0].Data:=GetFileSize(Self.OpenDialog1.FileName);
+  TA[0].Name:='Uncomp.';
+  TA[0].Data:=0;
+
   s:=System.IOUtils.TFile.ReadAllText(Self.OpenDialog1.FileName);
   AllocConsole;
   writeln('Uncompressed text:');
@@ -644,35 +655,78 @@ begin
 
   if Self.CheckBoxRLE.Checked then
   begin
-    CompressionStart(s,1);
+    SetLength(SA,Length(SA)+1);
+    SetLength(TA,Length(TA)+1);
+
+    stopWatch.Reset;
+    stopWatch.Start;
+    CompressionStart(s,1,newPath,newName);
+    SA[Length(TA)-1].Name:='RLE';
+    SA[Length(TA)-1].Data:=GetFileSize(newPath);
+    TA[Length(TA)-1].Name:='RLE';
+    TA[Length(TA)-1].Data:=stopWatch.ElapsedMilliseconds;
+    stopWatch.Stop;
   end;
 
   if Self.CheckBoxHUFF.Checked then
   begin
-    CompressionStart(s,2);
+    SetLength(SA,Length(SA)+1);
+    SetLength(TA,Length(TA)+1);
+    SA[Length(TA)-1].Name:='HUFFMAN';
+    TA[Length(TA)-1].Name:='HUFFMAN';
+
+    stopWatch.Reset;
+    stopWatch.Start;
+    CompressionStart(s,2,newPath,newName);
+    SA[Length(TA)-1].Data:=GetFileSize(newPath);
+    TA[Length(TA)-1].Data:=stopWatch.ElapsedMilliseconds;
+    stopWatch.Stop;
   end;
 
   if Self.CheckBoxLZ77.Checked then
   begin
-    CompressionStart(s,3);
+    SetLength(SA,Length(SA)+1);
+    SetLength(TA,Length(TA)+1);
+    SA[Length(TA)-1].Name:='LZ77';
+    TA[Length(TA)-1].Name:='LZ77';
+
+    stopWatch.Reset;
+    stopWatch.Start;
+    CompressionStart(s,3,newPath,newName);
+    SA[Length(TA)-1].Data:=GetFileSize(newPath);
+    TA[Length(TA)-1].Data:=stopWatch.ElapsedMilliseconds;
+    stopWatch.Stop;
   end;
 
   if Self.CheckBoxDeflate.Checked then
   begin
-    CompressionStart(s,4);
+    SetLength(SA,Length(SA)+1);
+    SetLength(TA,Length(TA)+1);
+    SA[Length(TA)-1].Name:='Deflate';
+    TA[Length(TA)-1].Name:='Deflate';
+
+    stopWatch.Reset;
+    stopWatch.Start;
+    CompressionStart(s,4,newPath,newName);
+    SA[Length(TA)-1].Data:=GetFileSize(newPath);
+    TA[Length(TA)-1].Data:=stopWatch.ElapsedMilliseconds;
+    stopWatch.Stop;
   end;
 
 
   if Self.CheckBoxA.Checked then
   begin
-    if chForm.Showing=false then
+    ChartForm.LoadGraphData(TA,SA);
+
+    if ChartForm.chForm.Showing=false then
     begin
-      chForm.Show;
+      ChartForm.chForm.Show;
     end else
         begin
-          chForm.Refresh;
+          ChartForm.chForm.Refresh;
         end;
   end;
+
   //FreeConsole;
 end;
 
@@ -1255,7 +1309,7 @@ begin
   SA[0].Data:=1024*50;
   for i := 1 to Length(TA)-1 do
   begin
-    TA[i].Name:=IntToStr(i);
+    TA[i].Name:='Anime';
     TA[i].Data:=1000*i;
     SA[i].Name:=IntToStr(i);
     SA[i].Data:=1024*5*i;

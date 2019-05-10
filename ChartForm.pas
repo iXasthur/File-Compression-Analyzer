@@ -76,6 +76,7 @@ function calcY(I:TImage;offsetY,min,max:Integer;Element:TAlgRec):Integer;
 var
   s,buff,yL,yPixelPos,yLengthData,yLengthPixels:Integer;
   k:Real;
+  savePos:TPoint;
 begin
   calcY:=I.Height - offsetY;
   yL:=((I.Height - 2*offsetY) div (dashCount+1));
@@ -87,7 +88,8 @@ begin
   end else
         if Element.Data=min then
         begin
-          calcY:=I.Height-yPixelPos;
+          yPixelPos:=I.Height-yPixelPos;
+          calcY:=yPixelPos;
         end else
             begin
               yLengthData:=max-min;
@@ -96,10 +98,10 @@ begin
 
               yPixelPos:=max-Element.Data;
               yPixelPos:=round(yPixelPos*k);
+              yPixelPos:=yPixelPos+offsetY+yL;
 
-              calcY:=yPixelPos+offsetY+yL;
+              calcY:=yPixelPos;
             end;
-
 
 
 end;
@@ -141,7 +143,8 @@ end;
 
 procedure drawPillars(I:TImage; offsetX,offsetY:Integer; DataArr:TGraphDataArray;T:Integer);
 var
-  count, s, xL, min, max:Integer;
+  count, s, xL, min, max,saveWidth:Integer;
+  savePos: TPoint;
 begin
   count:=Length(DataArr);
   I.Canvas.Pen.Width:=10;
@@ -170,7 +173,21 @@ begin
     for s := 0 to (count-1) do
     begin
       Canvas.MoveTo(Canvas.PenPos.X+xL,I.height - offsetY);
+
+      savePos:=Canvas.PenPos;
+      Canvas.TextOut(Canvas.PenPos.X-((Canvas.Font.Size div 2)*Length(DataArr[s].Name)-(Canvas.Font.Size div 4)),Canvas.PenPos.Y+10,DataArr[s].Name);
+      Canvas.PenPos:=savePos;
+
       Canvas.LineTo(Canvas.PenPos.X,calcY(I,offsetY,min,max,DataArr[s]));
+
+      savePos:=Canvas.PenPos;
+      saveWidth:=Canvas.Pen.Width;
+      Canvas.Pen.Width:=1;
+      Canvas.Pen.Style:=psDash;
+      Canvas.LineTo(offsetX,Canvas.PenPos.Y);
+      Canvas.PenPos:=savePos;
+      Canvas.Pen.Width:=saveWidth;
+      Canvas.Pen.Style:=psSolid;
     end;
   end;
 
@@ -184,7 +201,9 @@ var
 begin
   setLength(p,3);
   offsetX:=I.width div 10;
-  offsetY:=I.height div 20;
+  offsetY:=I.height div 10;
+  I.Canvas.Font.Size:=10;
+  I.Canvas.Font.Name:='Calibri';
 
   with I do
   begin
