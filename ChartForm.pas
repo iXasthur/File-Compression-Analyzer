@@ -11,6 +11,10 @@ const
   dashCount = 7;
 
 type
+  TTimeGraphDataArray = Array[1..4] of Integer;
+  TSizeGraphDataArray = Array[1..4] of Integer;
+
+type
   TForm2 = class(TForm)
     GridPanel1: TGridPanel;
     Label1: TLabel;
@@ -106,6 +110,11 @@ end;
 
 
 //------MAIN------
+procedure LoadGraphData();
+begin
+
+end;
+
 procedure TForm2.FormCreate(Sender: TObject);
 begin
   Self.DoubleBuffered:=True;

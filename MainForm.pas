@@ -12,7 +12,6 @@ const
   outputFiles = false;
 
 type
-  //TText = TStringList;
   TFile = TextFile;
 
   THuffArrayElement = Record
