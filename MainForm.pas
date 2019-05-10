@@ -1235,6 +1235,9 @@ end;
 
 
 procedure TForm1.Label1Click(Sender: TObject);
+var
+  TA,SA:ChartForm.TGraphDataArray;
+  i:Integer;
 begin
   if Self.Label1.Caption='(c)Mikhail Kavaleuski ' then
   begin
@@ -1244,7 +1247,21 @@ begin
         Self.Label1.Caption:='(c)Mikhail Kavaleuski '
       end;
 
-  chForm.Show;
+  SetLength(SA,5);
+  SetLength(TA,5);
+  TA[0].Name:='-';
+  TA[0].Data:=0;
+  SA[0].Name:='-';
+  SA[0].Data:=200;
+  for i := 1 to Length(TA)-1 do
+  begin
+    TA[i].Name:=IntToStr(i);
+    TA[i].Data:=1000*i;
+    SA[i].Name:=IntToStr(i);
+    SA[i].Data:=500*i;
+  end;
+  ChartForm.LoadGraphData(TA,SA);
+  ChartForm.chForm.Show;
 end;
 
 

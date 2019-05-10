@@ -11,8 +11,12 @@ const
   dashCount = 7;
 
 type
-  TTimeGraphDataArray = Array[1..4] of Integer;
-  TSizeGraphDataArray = Array[1..4] of Integer;
+  TAlgRec = Record
+    Name: String;
+    Data: Integer;
+  end;
+  TGraphDataArray = Array of TAlgRec;
+//  TSizeGraphArray = Array of TAlgRec;
 
 type
   TForm2 = class(TForm)
@@ -31,6 +35,8 @@ type
   public
     { Public declarations }
   end;
+
+procedure LoadGraphData(TimeArr:TGraphDataArray;SizeArr:TGraphDataArray);
 
 var
   chForm: TForm2;
@@ -94,36 +100,71 @@ begin
   drawDashes(I,offsetX,offsetY);
 end;
 
-procedure drawSizeGraph(I:TImage);
+procedure drawPillars(I:TImage;DataArr:TGraphDataArray;T:Integer);
+begin
+  case T of
+    1:
+      begin
+
+      end;
+    2:
+      begin
+
+      end;
+  end;
+end;
+
+procedure drawSizeGraph(I:TImage;SA:TGraphDataArray);
 begin
   I.Picture:=nil;
   drawAxises(I);
+  drawPillars(I,SA,1);
 end;
 
-procedure drawTimeGraph(I:TImage);
+procedure drawTimeGraph(I:TImage;TA:TGraphDataArray);
 begin
   I.Picture:=nil;
   drawAxises(I);
+  drawPillars(I,TA,2);
 end;
 
 
 
+var
+  TimeArrG,SizeArrG:TGraphDataArray;
 
 //------MAIN------
-procedure LoadGraphData();
+procedure LoadGraphData(TimeArr:TGraphDataArray;SizeArr:TGraphDataArray);
+var
+  i:Integer;
 begin
+  SetLength(TimeArrG,Length(TimeArr));
+  SetLength(SizeArrG,Length(SizeArr));
+  for i := 0 to Length(TimeArrG)-1 do
+  begin
+    TimeArrG[i]:=TimeArr[i];
+  end;
 
+  for i := 0 to Length(SizeArrG)-1 do
+  begin
+    SizeArrG[i]:=SizeArr[i];
+  end;
 end;
 
 procedure TForm2.FormCreate(Sender: TObject);
+var
+  i:Integer;
 begin
   Self.DoubleBuffered:=True;
+
+  SetLength(TimeArrG,0);
+  SetLength(SizeArrG,0);
 end;
 
 procedure TForm2.FormPaint(Sender: TObject);
 begin
-  drawTimeGraph(Self.TimeGraphImage);
-  drawSizeGraph(Self.SizeGraphImage);
+  drawTimeGraph(Self.TimeGraphImage,TimeArrG);
+  drawSizeGraph(Self.SizeGraphImage,SizeArrG);
 end;
 
 procedure TForm2.FormResize(Sender: TObject);
