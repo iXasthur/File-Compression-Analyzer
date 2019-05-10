@@ -145,6 +145,50 @@ end;
 
 
 //-----HUFFMAN-----
+procedure DisposeHuffTree(var head: HuffTreePointer);
+var
+  element, A:HuffTreePointer;
+begin
+
+  if head<>nil then
+  begin
+    while head.left<>nil do
+    begin
+      A:=head.left.left;
+
+      if head.left.right<>nil then
+      begin
+        dispose(head.left.right.right);
+        dispose(head.left.right.left);
+      end;
+      dispose(head.left.right);
+      dispose(head.left);
+
+      head.left:=A;
+    end;
+    dispose(head.left);
+
+    while head.right<>nil do
+    begin
+      A:=head.right.right;
+
+      if head.right.left<>nil then
+      begin
+        dispose(head.right.left.left);
+        dispose(head.right.left.right);
+      end;
+      dispose(head.right.left);
+      dispose(head.right);
+
+      head.right:=A;
+    end;
+    dispose(head.right);
+  end;
+  dispose(head);
+
+end;
+
+
 function HUFFGetCount(var arr:THuffArray; str: String):integer;
 var
   i,n: Integer;
@@ -471,11 +515,7 @@ begin
   CloseFile(F);
   Finalize(arr);
 
-  //ClearTree!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-  //ClearTree!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-  //ClearTree!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-  //ClearTree!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-  //ClearTree!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+  DisposeHuffTree(treeHead);
 
 end;
 //-----------------
@@ -930,6 +970,7 @@ begin
     s:=HUFFCharToStringBinary(s);
     s:=decodeHuffString(head,s);
 
+    DisposeHuffTree(head);
   end else
       begin
         s:='';
@@ -941,11 +982,7 @@ begin
   write(F,s);
   CloseFile(F);
 
-  //----Clear-Tree!!!-----
-  //----Clear-Tree!!!-----
-  //----Clear-Tree!!!-----
-  //----Clear-Tree!!!-----
-  //----Clear-Tree!!!-----
+
 end;
 //-----------------
 
