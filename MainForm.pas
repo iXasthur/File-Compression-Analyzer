@@ -42,10 +42,11 @@ type
     CheckBoxHUFF: TCheckBox;
     CheckBoxA: TCheckBox;
     DecompressionButton: TSpeedButton;
-    CheckBoxExport: TCheckBox;
+    CheckBoxExportTXT: TCheckBox;
     CheckBoxLZ77: TCheckBox;
     CheckBoxDeflate: TCheckBox;
     DTimeLabel: TLabel;
+    CheckBoxExpComp: TCheckBox;
     procedure OpenButtonClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure Label1Click(Sender: TObject);
@@ -707,6 +708,11 @@ begin
     TA[Length(TA)-1].Name:='RLE';
     TA[Length(TA)-1].Data:=stopWatch.ElapsedMilliseconds;
     stopWatch.Stop;
+
+    if Self.CheckBoxExpComp.Checked=false then
+    begin
+      DeleteFile(NewPath);
+    end;
   end;
 
   if Self.CheckBoxHUFF.Checked then
@@ -722,6 +728,11 @@ begin
     SA[Length(TA)-1].Data:=GetFileSize(newPath);
     TA[Length(TA)-1].Data:=stopWatch.ElapsedMilliseconds;
     stopWatch.Stop;
+
+    if Self.CheckBoxExpComp.Checked=false then
+    begin
+      DeleteFile(NewPath);
+    end;
   end;
 
   if Self.CheckBoxLZ77.Checked then
@@ -737,6 +748,11 @@ begin
     SA[Length(TA)-1].Data:=GetFileSize(newPath);
     TA[Length(TA)-1].Data:=stopWatch.ElapsedMilliseconds;
     stopWatch.Stop;
+
+    if Self.CheckBoxExpComp.Checked=false then
+    begin
+      DeleteFile(NewPath);
+    end;
   end;
 
   if Self.CheckBoxDeflate.Checked then
@@ -752,6 +768,11 @@ begin
     SA[Length(TA)-1].Data:=GetFileSize(newPath);
     TA[Length(TA)-1].Data:=stopWatch.ElapsedMilliseconds;
     stopWatch.Stop;
+
+    if Self.CheckBoxExpComp.Checked=false then
+    begin
+      DeleteFile(NewPath);
+    end;
   end;
 
 
@@ -1144,7 +1165,7 @@ begin
   writeln;
   writeln;
 
-  if Form1.CheckBoxExport.Checked=false then
+  if Form1.CheckBoxExportTXT.Checked=false then
   begin
     DeleteFile(newPath);
   end;
@@ -1212,8 +1233,10 @@ begin
   Self.CheckBoxHUFF.Enabled:=False;
   Self.CheckBoxLZ77.Enabled:=False;
 
+  Self.CheckBoxExpComp.Enabled:=False;
   Self.CheckBoxA.Enabled:=False;
-  Self.CheckBoxExport.Enabled:=False;
+
+  Self.CheckBoxExportTXT.Enabled:=False;
 
   Self.CompressionButton.Enabled:=False;
   Self.DecompressionButton.Enabled:=False;
@@ -1227,6 +1250,12 @@ var
 begin
   if OpenDialog1.Execute() then
   begin
+    if ChartForm.chForm.Showing=true then
+    begin
+      ChartForm.chForm.Hide;
+    end;
+
+
     Self.Memo1.Lines.LoadFromFile(Self.OpenDialog1.FileName);
 
     Self.OpenButton.Caption:='Open another file';
@@ -1267,7 +1296,9 @@ begin
       Self.CheckBoxDeflate.Enabled:=True;
 
       Self.CheckBoxA.Enabled:=True;
-      Self.CheckBoxExport.Enabled:=False;
+      Self.CheckBoxExpComp.Enabled:=True;
+
+      Self.CheckBoxExportTXT.Enabled:=False;
 
       Self.DTimeLabel.Caption:='D.Time: 0 ms';
       Self.DTimeLabel.Enabled:=False;
@@ -1301,7 +1332,9 @@ begin
           Self.CheckBoxDeflate.Enabled:=False;
 
           Self.CheckBoxA.Enabled:=False;
-          Self.CheckBoxExport.Enabled:=True;
+          Self.CheckBoxExpComp.Enabled:=False;
+
+          Self.CheckBoxExportTXT.Enabled:=True;
 
           Self.DTimeLabel.Caption:='D.Time: 0 ms';
           Self.DTimeLabel.Enabled:=True;

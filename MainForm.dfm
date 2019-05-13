@@ -124,8 +124,8 @@ object Form1: TForm1
         Row = 5
       end
       item
-        Column = 4
-        ColumnSpan = 4
+        Column = 6
+        ColumnSpan = 2
         Control = CheckBoxA
         Row = 5
       end
@@ -138,7 +138,7 @@ object Form1: TForm1
       item
         Column = 4
         ColumnSpan = 2
-        Control = CheckBoxExport
+        Control = CheckBoxExportTXT
         Row = 7
       end
       item
@@ -158,6 +158,12 @@ object Form1: TForm1
         ColumnSpan = 3
         Control = DTimeLabel
         Row = 7
+      end
+      item
+        Column = 4
+        ColumnSpan = 2
+        Control = CheckBoxExpComp
+        Row = 5
       end>
     ParentBackground = False
     RowCollection = <
@@ -298,14 +304,15 @@ object Form1: TForm1
     end
     object CheckBoxA: TCheckBox
       AlignWithMargins = True
-      Left = 322
+      Left = 476
       Top = 269
-      Width = 279
+      Width = 143
       Height = 47
       Margins.Left = 10
       Align = alLeft
       Caption = 'Analyse'
       TabOrder = 3
+      ExplicitLeft = 322
     end
     object DecompressionButton: TSpeedButton
       AlignWithMargins = True
@@ -325,7 +332,7 @@ object Form1: TForm1
       ExplicitWidth = 23
       ExplicitHeight = 22
     end
-    object CheckBoxExport: TCheckBox
+    object CheckBoxExportTXT: TCheckBox
       AlignWithMargins = True
       Left = 322
       Top = 375
@@ -366,6 +373,17 @@ object Form1: TForm1
       Anchors = []
       Caption = 'D.Time: 0 ms'
       ExplicitLeft = 511
+    end
+    object CheckBoxExpComp: TCheckBox
+      AlignWithMargins = True
+      Left = 322
+      Top = 269
+      Width = 143
+      Height = 47
+      Margins.Left = 10
+      Align = alLeft
+      Caption = 'Export comp.'
+      TabOrder = 7
     end
   end
   object OpenDialog1: TOpenDialog
