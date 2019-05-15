@@ -97,34 +97,30 @@ end;
 //-------RLE-------
 function RLECompressString(str: String):String;
 var
-  s: Integer;
+  s,p: Integer;
   buffChar: Char;
   buffStr: String;
 begin
   buffStr:='';
-  if length(str)>1 then
+  p:=1;
+
+  if length(str)>=1 then
   begin
-    while length(str)>=1 do
+    while p<=length(str) do
     begin
       s:=0;
-      buffChar:=str[1];
+      buffChar:=str[p];
 
-      while (length(str)>=1) and (str[1]=buffChar) and (s<>127) do
+      while (p<=length(str)) and (str[p]=buffChar) and (s<>127) do
       begin
         s:=s+1;
-        delete(str,1,1);
+        p:=p+1;
       end;
-//      writeln(s:3,buffChar:2);
+//      write(s,buffChar);
       buffStr:=buffStr+Chr(s);
       buffStr:=buffStr+buffChar;
     end;
-  end else
-        if length(str)=1 then
-        begin
-          buffChar:=str[1];
-          buffStr:=Chr(1);
-          buffStr:=buffStr+buffChar;
-        end;
+  end;
 
   RLECompressString:=buffStr;
 end;
@@ -531,18 +527,18 @@ begin
   buff:='';
   buff127:='';
   sequence:='';
+  p:=1;
 
 
 
-
-  while length(s)>0 do
+  while p<=length(s) do
   begin
     q1:=0;
     q2:=0;
     sequence:='';
 
-    sequence:=sequence+s[1];
-    i:=2;
+    sequence:=sequence+s[p];
+    i:=p+1;
     while (pos(sequence,buff127)>0) and (i<=length(s)) do
     begin
       q1:=length(buff127)-pos(sequence,buff127)+1;
@@ -559,7 +555,8 @@ begin
 
     buff:=buff+Chr(q1)+Chr(q2)+sequence[length(sequence)];
 //    buff:=buff+IntToStr(q1)+'/'+IntToStr(q2)+'/'+sequence[length(sequence)]+' ';
-    delete(s,1,length(sequence));
+//    delete(s,1,length(sequence));
+    p:=p+length(sequence);
   end;
 
 
@@ -798,35 +795,27 @@ end;
 //-------RLE-------
 function decompressRLEString(str:String):String;
 var
-  s,i: Integer;
+  s,i,p: Integer;
   buffChar: Char;
   buffCount: Integer;
   buffStr: String;
 begin
   buffStr:='';
-  if length(str)>2 then
+  p:=1;
+
+  if length(str)>=2 then
   begin
-    while length(str)>=2 do
+    while p<length(str) do
     begin
-      buffCount:=Ord(str[1]);
-      buffChar:=str[2];
+      buffCount:=Ord(str[p]);
+      buffChar:=str[p+1];
       for i:=1 to buffCount do
       begin
         buffStr:=buffStr+buffChar;
       end;
-      delete(str,1,2);
+      p:=p+2;
     end;
-  end else
-        if length(str)=2 then
-        begin
-          buffCount:=Ord(str[1]);
-          buffChar:=str[2];
-          for i:=1 to buffCount do
-          begin
-            buffStr:=buffStr+buffChar;
-          end;
-
-        end;
+  end;
 
 
   decompressRLEString:=buffStr;
@@ -936,14 +925,16 @@ end;
 function decodeHuffString(head:HuffTreePointer; s:string):String;
 var
   buff, buffSequence:string;
-  z:integer;
+  z,p:integer;
 begin
   buff:='';
   buffSequence:='';
-  while length(s)>0 do
+  p:=1;
+
+  while p<=length(s) do
   begin
-    buffSequence:=buffSequence+s[1];
-    delete(s,1,1);
+    buffSequence:=buffSequence+s[p];
+    p:=p+1;
 
     z:=getSymbolFromHuffTree(head, buffSequence);
     if z<>-1 then

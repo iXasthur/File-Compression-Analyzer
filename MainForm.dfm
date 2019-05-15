@@ -312,7 +312,6 @@ object Form1: TForm1
       Align = alLeft
       Caption = 'Analyse'
       TabOrder = 3
-      ExplicitLeft = 322
     end
     object DecompressionButton: TSpeedButton
       AlignWithMargins = True
