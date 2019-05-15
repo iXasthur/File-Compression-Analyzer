@@ -447,46 +447,97 @@ begin
   HUFFGetBSymbol:=buff;
 end;
 
-function StrBinToInt(s: String; l:integer):Integer;
+//function StrBinToInt(s: String; l:integer):Integer;
+//var
+//  i: integer;
+//  value: integer;
+//begin
+//  value:=0;
+//  for i:=1 to l do
+//  begin
+//    if s[i]='1' then
+//    begin
+////      value:=value+round(exp(abs(i-8)*ln(2)));
+//      value:=value+round(power(2,abs(i-l)));
+//    end;
+//  end;
+////  write(' ',value);
+//  StrBinToInt:=value;
+//end;
+
+//function HUFFStringBinaryToChar(s:String):String;
+//var
+//  buff:String;
+//  lastLength: Integer;
+//begin
+//  buff:='';
+//
+//  while length(s)>7 do
+//  begin
+//    buff:=buff+chr(StrBinToInt(s,7));
+//    delete(s,1,7);
+//  end;
+////  writeln;
+//  {
+//    Next part adds (lastLength) additional 0 to the beginning of the next sequence
+//  }
+//  if (length(s)>0) and (length(s)<=7) then
+//  begin
+//    lastLength:=length(s);
+//    if lastLength<>0 then
+//    begin
+//      buff:=buff+chr(StrBinToInt(s,lastLength));
+//    end;
+//    buff:=buff+IntToStr(7-lastLength);
+//  end;
+//
+//
+//  HUFFStringBinaryToChar:=buff;
+//end;
+
+
+function StrBinToInt(s: String; pos,l:integer):Integer;
 var
   i: integer;
   value: integer;
 begin
   value:=0;
-  for i:=1 to l do
+  l:=l+(pos-1);
+  for i:=pos to l do
   begin
     if s[i]='1' then
     begin
-//      value:=value+round(exp(abs(i-8)*ln(2)));
       value:=value+round(power(2,abs(i-l)));
     end;
   end;
-//  write(' ',value);
   StrBinToInt:=value;
 end;
+
 
 function HUFFStringBinaryToChar(s:String):String;
 var
   buff:String;
-  lastLength: Integer;
+  lastLength,p: Integer;
 begin
   buff:='';
-
-  while length(s)>7 do
+  p:=1;
+  while p<=(length(s)-7) do
   begin
-    buff:=buff+chr(StrBinToInt(s,7));
-    delete(s,1,7);
+    buff:=buff+chr(StrBinToInt(s,p,7));
+    p:=p+7;
   end;
-//  writeln;
+
   {
     Next part adds (lastLength) additional 0 to the beginning of the next sequence
   }
+
+  delete(s,1,p-1);
   if (length(s)>0) and (length(s)<=7) then
   begin
     lastLength:=length(s);
     if lastLength<>0 then
     begin
-      buff:=buff+chr(StrBinToInt(s,lastLength));
+      buff:=buff+chr(StrBinToInt(s,1,lastLength));
     end;
     buff:=buff+IntToStr(7-lastLength);
   end;
@@ -494,6 +545,7 @@ begin
 
   HUFFStringBinaryToChar:=buff;
 end;
+
 
 function HUFFCompressString(head:HuffTreePointer; s: String):String;
 var
