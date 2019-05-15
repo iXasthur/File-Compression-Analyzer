@@ -128,7 +128,6 @@ end;
 
 procedure RLECompress(s:string; newPath:String);
 var
-  i: Integer;
   F: TFile;
 begin
   AssignFile(F,newPath);
@@ -145,7 +144,7 @@ end;
 //-----HUFFMAN-----
 procedure DisposeHuffTree(var head: HuffTreePointer);
 var
-  element, A:HuffTreePointer;
+  A:HuffTreePointer;
 begin
 
   if head<>nil then
@@ -308,7 +307,6 @@ procedure OutputTree(head:HuffTreePointer);
 var
   element: HuffTreePointer;
   check: Boolean;
-  i: integer;
 begin
   writeln('Left Branch');
   element:=head;
@@ -443,7 +441,7 @@ end;
 function HUFFStringBinaryToChar(s:String):String;
 var
   buff:String;
-  lastLength,i: Integer;
+  lastLength: Integer;
 begin
   buff:='';
 
@@ -528,7 +526,7 @@ end;
 //-------LZ77-----
 function LZ77CompressString(s:String):String;
 var
-  i,p,q1,q2,q3,sequenceSize:integer;
+  i,p,q1,q2:integer;
   buff,buff127,sequence:String;
 begin
   buff:='';
@@ -605,7 +603,7 @@ end;
 
 procedure CompressionStart(s:string;z:integer;var newPath,newName:String);
 var
-  i,p: Integer;
+  p: Integer;
 begin
   newPath:=ExtractFilePath(Form1.OpenDialog1.FileName);
   newName:=ExtractFileName(Form1.OpenDialog1.FileName);
@@ -672,7 +670,6 @@ end;
 procedure TForm1.CompressionButtonClick(Sender: TObject);
 var
   s: String;
-  i:integer;
   newPath,newName: String;
   stopWatch: TStopWatch;
   TA,SA:ChartForm.TGraphDataArray;
@@ -802,7 +799,7 @@ end;
 //-------RLE-------
 function decompressRLEString(str:String):String;
 var
-  s,i,p: Integer;
+  i,p: Integer;
   buffChar: Char;
   buffCount: Integer;
   buffStr: String;
@@ -832,7 +829,6 @@ end;
 procedure decompressRLE(s,newPath:String);
 var
   F:TFile;
-  i:integer;
 begin
   AssignFile(F,newPath);
   Rewrite(F);
@@ -850,7 +846,7 @@ end;
 //-----HUFFMAN-----
 function IntToBin7(d: Integer): string;
 var
-  x, p: Integer;
+  x: Integer;
   bin: string;
 begin
   bin := '';
@@ -960,7 +956,7 @@ end;
 procedure decompressHFM(s:string;newPath:String);
 var
   F:TFile;
-  i,n,p:integer;
+  i,p:integer;
   arr:THuffArray;
   head:HUFFTreePointer;
   buff:String;
@@ -1089,7 +1085,7 @@ end;
 
 procedure StartDecompression(path:String;z:integer);
 var
-  i,p: Integer;
+  p: Integer;
   s:string;
   newPath,newName: String;
 begin
