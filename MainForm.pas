@@ -940,7 +940,7 @@ begin
         end;
     d := d shr 1;
   end;
-  Delete(bin, 1, 8 * ((Pos('1', bin) - 1) div 8));
+  Delete(bin, 1, 7 * ((Pos('1', bin) - 1) div 7));
   Result := bin;
 end;
 
