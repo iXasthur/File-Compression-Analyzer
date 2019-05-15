@@ -189,24 +189,9 @@ end;
 
 function HUFFGetCount(var arr:THuffArray; str: String):integer;
 var
-  i,n,q,seqL: Integer;
+  n,q,seqL: Integer;
   buffChar: char;
-  check: boolean;
 begin
-//  n:=-1;
-//  while length(str)>0 do
-//  begin
-//    n:=n+1;
-//    buffChar:=str[1];
-//    arr[n].symbolCode:=ord(buffChar);
-//    while pos(buffChar,str)<>0 do
-//    begin
-//      arr[n].count:=arr[n].count+1;
-//      delete(str, pos(buffChar,str), 1);
-//    end;
-//
-//  end;
-//  HUFFGetCount:=n+1;
   n:=-1;
   while length(str)>0 do
   begin
@@ -217,7 +202,7 @@ begin
     begin
       q:=pos(buffChar,str);
       seqL:=0;
-      while str[q]=buffChar do
+      while (q<=length(str)) and (str[q]=buffChar) do
       begin
         seqL:=seqL+1;
         q:=q+1;
