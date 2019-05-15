@@ -188,27 +188,54 @@ end;
 
 function HUFFGetCount(var arr:THuffArray; str: String):integer;
 var
-  n,q,seqL: Integer;
+  n,q,seqL,z: Integer;
   buffChar: char;
 begin
+//  n:=-1;
+//  while length(str)>0 do
+//  begin
+//    n:=n+1;
+//    buffChar:=str[1];
+//    arr[n].symbolCode:=ord(buffChar);
+//    while pos(buffChar,str)<>0 do
+//    begin
+//      q:=pos(buffChar,str);
+//      seqL:=0;
+//      while (q<=length(str)) and (str[q]=buffChar) do
+//      begin
+//        seqL:=seqL+1;
+//        q:=q+1;
+//      end;
+//
+//      arr[n].count:=arr[n].count+seqL;
+//      delete(str, pos(buffChar,str), seqL);
+//    end;
+//
+//  end;
+//  HUFFGetCount:=n+1;
+
   n:=-1;
   while length(str)>0 do
   begin
     n:=n+1;
     buffChar:=str[1];
     arr[n].symbolCode:=ord(buffChar);
-    while pos(buffChar,str)<>0 do
+
+    z:=pos(buffChar,str);
+    if z<>0 then
     begin
-      q:=pos(buffChar,str);
       seqL:=0;
-      while (q<=length(str)) and (str[q]=buffChar) do
-      begin
-        seqL:=seqL+1;
-        q:=q+1;
-      end;
+      for q := z to length(str) do
+        begin
+          if str[q]=buffChar then
+          begin
+            seqL:=seqL+1;
+          end;
+
+        end;
 
       arr[n].count:=arr[n].count+seqL;
-      delete(str, pos(buffChar,str), seqL);
+      str:=StringReplace(str,buffChar,'',[rfReplaceAll]);
     end;
 
   end;
