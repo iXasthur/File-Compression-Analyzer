@@ -1,1 +1,1 @@
-# FCA
+# File Compression Analyzer
